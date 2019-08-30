@@ -5,7 +5,7 @@ cover: assets/images/sky.jpg
 navigation: True
 title: Hello, world!
 date: 2019-08-30 19:55:23
-tags: develop, git
+tags: [Develop], git
 class: post-template
 subclass: 'post tag-develop'
 author: Woojune Park
@@ -43,7 +43,6 @@ DO NOT just google 'ruby' and install something comes up first.
 
 https://jekyllrb.com/docs/installation/windows/
 Go to the site above and follow instructions. Instructions are :
-
 1) Download Ruby+Devkit version. (w/ recommended version number, which is stable one)
 2) Use default options for installation.
 3) Check the ridk install step on the last stage of the installation.
@@ -53,36 +52,36 @@ Go to the site above and follow instructions. Instructions are :
 
 
 2. Install Jekyll & Bundler
-	1) Install(This takes 2~3 min.): 
+1) Install(This takes 2~3 min.): 
 		$ gem install jekyll bundler
-	2) Check if Jekyll installed properly: $ jekyll -v
-	3) If 'jekyll 4.0.0' or above comes up, then you're ready to go.
+2) Check if Jekyll installed properly: $ jekyll -v
+3) If 'jekyll 4.0.0' or above comes up, then you're ready to go.
 
 
 3. Install Theme
-	1) Fork a jekyll theme repo you want. (You can look for one at http://jekyllthemes.org/ or https://jekyllthemes.io/)
-	2) Change the name of the repo to (your-github-nickname).github.io
-	3) Clone forked repo to your desktop.
-	4) Open CMD and go to the theme file folder. (Psst, it's called cd.)
-	5) Create Gemfile: 
-		$ bundle init
-	6) Add Jekyll : 
-		$ bundle add jekyll
-	7) Install Ruby Gems: 
-		$ bundle install
-	8) 
-		$ bundle exec jekyll serve
-	9) Tinker _config.yml file.
+1) Fork a jekyll theme repo you want. (You can look for one at http://jekyllthemes.org/ or https://jekyllthemes.io/)
+2) Change the name of the repo to (your-github-nickname).github.io
+3) Clone forked repo to your desktop.
+4) Open CMD and go to the theme file folder. (Psst, it's called cd.)
+5) Create Gemfile: 
+	$ bundle init
+6) Add Jekyll : 
+	$ bundle add jekyll
+7) Install Ruby Gems: 
+	$ bundle install
+8) 
+	$ bundle exec jekyll serve
+9) Tinker _config.yml file.
 
 
 4. Install Atom (you can skip this if you use other kramdown editers)
-	1) Install Atom: https://atom.io/
-	2) Install Kramdown: https://kramdown.gettalong.org/installation.html
+1) Install Atom: https://atom.io/
+2) Install Kramdown: https://kramdown.gettalong.org/installation.html
 		$ gem install kramdown
-	3) We need Node.js and stuff for this package to work. Install Node.js at https://nodejs.org/en/
-	4) Open windows power shell (NOT CMD) and type in:
+3) We need Node.js and stuff for this package to work. Install Node.js at https://nodejs.org/en/
+4) Open windows power shell (NOT CMD) and type in:
 		$ npm install --global --production windows-build-tools
-	5) Install Atom Kramdown Package: https://atom.io/packages/markdown-preview-kramdown
+5) Install Atom Kramdown Package: https://atom.io/packages/markdown-preview-kramdown
 
-Chrome web app :
+Alternatively, you can use a Chrome web app :
 https://chrome.google.com/webstore/detail/jekyll-editor/dfdkgbhjmllemfblfoohhehdigokocme?hl=ko
