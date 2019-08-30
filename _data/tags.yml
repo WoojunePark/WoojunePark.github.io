@@ -1,16 +1,16 @@
-speeches:
-  name: speeches
+deep learning:
+  name: deep learning
   description: Some of the greatest words ever spoken.
   cover: assets/images/speeches.jpg
-fiction:
-  name: fiction
+environment setting:
+  name: environment setting
   description: False
   cover: False
-fables:
-  name: fables
-  description: A series of short stories that make you think.
-  cover: assets/images/fables.jpg
-getting-started:
-  name: getting-started
+develop:
+  name: develop
+  description: False
+  cover: False
+git:
+  name: git
   description: False
   cover: False
