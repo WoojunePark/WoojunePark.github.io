@@ -5,7 +5,7 @@ cover: assets/images/sky.jpg
 navigation: True
 title: Hello world
 date: 2019-08-30 19:55:23
-tags: [Develop], git
+tags: Develop, git
 class: post-template
 subclass: 'post tag-develop'
 author: Woojune Park
