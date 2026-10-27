@@ -1,29 +1,25 @@
-## Jasper2
+# woojunepark.github.io
 
-[![Build Status](https://travis-ci.org/jekyller/jasper2.svg?branch=master)](https://travis-ci.org/jekyller/jasper2)
-[![Ruby](https://img.shields.io/badge/ruby-2.5.1-blue.svg?style=flat)](http://travis-ci.org/jekyller/jasper2)
-[![Jekyll](https://img.shields.io/badge/jekyll-3.7.4-blue.svg?style=flat)](http://travis-ci.org/jekyller/jasper2)
+Personal CV site: https://woojunepark.github.io
 
-This is a full-featured port of Ghost's default theme [Casper](https://github.com/tryghost/casper)
-*v2.1.9* for [Jekyll](https://jekyllrb.com/) / [GitHub Pages](https://pages.github.com/).
+## How it updates
 
+```
+final-offer (private)                         this repository (public)
+wiki/candidate/records/*.md  (claims)
+channels/cv-site/site.yaml   (presentation)
+        │ push to main
+        ▼
+publish-cv-site.yml: final-offer site export ──► data/cv.json ──► deploy.yml: build.py --pdf ──► GitHub Pages
+  (refuses unsourced, internal or unverified                       HTML pages + files/CV_Woojune_Park_<Mon><YYYY>.pdf
+   claims and numbers the claims do not hold)                      + files/cv.pdf (stable link)
+```
 
-## Thanks
+- Content is edited in the private repository, not here. `data/cv.json` is generated; do not hand-edit it.
+- `updated` (shown on the pages and in the PDF file name) changes only when the exported content changes.
+- Joint first authors carry `#`, explained by the note "# these authors contributed equally to this work".
+- Layout and style live here: `build.py` (standard library only), `assets/`.
 
+Local preview: `python build.py --pdf` (needs Chrome or Edge; set `CHROME` if it is not found), then open `_site/index.html`.
 
-Many thanks to the Ghost team for all the design work. Also many thanks to all contributors,
-that help keeping the project alive and updated :smile:
-
-
-## Copyright & License
-
-Same licence as the one provided by Ghost's team. See Casper's theme [license](GHOST.txt).
-
-Copyright (C) 2015-2018 - Released under the MIT License.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+The previous Jekyll blog (2019) is kept on the `legacy-2019-blog` branch.

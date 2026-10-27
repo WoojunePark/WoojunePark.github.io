@@ -1,0 +1,18 @@
+/* PDF CV (cv/print.html). Always light, A4, compact. */
+@page { size: A4; margin: 16mm 15mm 16mm; }
+:root, :root:not([data-theme="light"]) {
+  --bg: #fff; --fg: #111; --muted: #555; --line: #ccc; --accent: #1f4f8f;
+}
+html:has(body.print) { font-size: 10pt; }
+body.print { font-size: 10pt; line-height: 1.42; background: #fff; color: #111; }
+body.print a { color: var(--accent); }
+.cv-head { text-align: center; margin-bottom: 6mm; }
+.cv-head h1 { font-size: 20pt; margin: 0 0 2px; }
+.cv-head p { margin: 1px 0; color: var(--muted); }
+body.print h2 { font-size: 11.5pt; margin: 5mm 0 2mm; padding-bottom: 1mm; text-transform: uppercase; letter-spacing: .04em; }
+body.print h3.pub-group { font-size: 10pt; margin: 2.5mm 0 1mm; }
+body.print .org, body.print .row, body.print .pub { break-inside: avoid; }
+body.print .row { margin: 1mm 0 2mm; }
+body.print .pub { margin-bottom: 2mm; }
+body.print .row ul { margin-top: 1mm; }
+.cv-updated { margin-top: 6mm; color: var(--muted); font-size: 8.5pt; text-align: right; }
