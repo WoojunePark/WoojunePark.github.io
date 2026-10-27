@@ -13,6 +13,8 @@ body.print a { color: var(--accent); }
 body.print h2 { font-size: 11.5pt; margin: 5mm 0 2mm; padding-bottom: 1mm; text-transform: uppercase; letter-spacing: .04em; }
 body.print h3.pub-group { font-size: 10pt; margin: 2.5mm 0 1mm; }
 body.print .org, body.print .row, body.print .pub { break-inside: avoid; }
+body.print h2, body.print h3.pub-group { break-after: avoid; }
+body.print section:last-of-type { break-inside: avoid; }
 body.print .row { margin: 1mm 0 2mm; }
 body.print .pub { margin-bottom: 2mm; }
 body.print .row ul { margin-top: 1mm; }
