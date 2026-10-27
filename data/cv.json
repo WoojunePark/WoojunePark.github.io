@@ -1,0 +1,362 @@
+{
+  "schema_version": "final-offer.site-public/v1",
+  "updated": "2026-10-27",
+  "content_hash": "sha256:41e81b62129a7c740036e7c6cafd3ecd3865dda42f17fd2ba37458332d9603b4",
+  "site": {
+    "url": "https://woojunepark.github.io",
+    "cv_file_prefix": "CV_Woojune_Park",
+    "equal_contribution_note": "# these authors contributed equally to this work"
+  },
+  "profile": {
+    "name": "Woojune Park",
+    "name_native": "박우준",
+    "me": [
+      "Woojune Park",
+      "Woo-June Park",
+      "박우준"
+    ],
+    "headline": "Senior Researcher, LG Electronics CTO",
+    "location": "Seoul, Korea",
+    "photo": "assets/photo.jpg",
+    "links": [
+      {
+        "label": "Email",
+        "url": "mailto:woojunepark@gmail.com"
+      },
+      {
+        "label": "LinkedIn",
+        "url": "https://www.linkedin.com/in/woojune-park-65448a16b"
+      },
+      {
+        "label": "GitHub",
+        "url": "https://github.com/WoojunePark"
+      }
+    ]
+  },
+  "about": [
+    {
+      "text": "I am a Senior Researcher in XR Standards at LG Electronics CTO in Seoul, researching 3D Gaussian Splatting applications for XR and immersive media."
+    },
+    {
+      "text": "Before that I worked in 3D Graphics at LG Electronics: an interactive 3D Gaussian Splatting display demo with real-time parallax, automated optimization of high-fidelity 3D assets for web and mobile AR on LG.com, and an MCP-based tool, later a self-improving LangGraph agent, that lets marketers run that optimization on their own."
+    },
+    {
+      "text": "I received my M.S. and B.E. in Electronics Engineering from Sogang University. My graduate research covered camera pose estimation and multi-view stereo for omnidirectional imaging."
+    }
+  ],
+  "experience": [
+    {
+      "org": "LG Electronics, CTO",
+      "place": "Seoul, Korea",
+      "roles": [
+        {
+          "title": "Senior Researcher, XR Standards",
+          "from": "2025-12",
+          "to": "present",
+          "bullets": [
+            {
+              "text": "Researching 3D Gaussian Splatting applications for XR and immersive media."
+            }
+          ]
+        },
+        {
+          "title": "Senior Researcher, 3D Graphics",
+          "from": "2023-02",
+          "to": "2025-12",
+          "bullets": [
+            {
+              "text": "Built an interactive display demo with 3D Gaussian Splatting reconstructed from V-Ray renders, integrating HTC Vive tracking with Unreal Engine 5 nDisplay for real-time parallax; rendered in real time at 4K and presented to executive leadership."
+            },
+            {
+              "text": "Automated the optimization of high-fidelity 3D assets (3ds Max + V-Ray) for web and mobile AR: 200+ assets, average file size from about 4 GB to about 4 MB, deployed on LG.com (US) so customers can view TV products at real scale."
+            },
+            {
+              "text": "Developed an MCP-based tool that lets marketers run 3D asset optimization autonomously, then extended it into a self-improving LangGraph agent with agentic optimization loops."
+            }
+          ]
+        },
+        {
+          "title": "Researcher, 3D Graphics",
+          "from": "2022-02",
+          "to": "2023-02"
+        }
+      ]
+    },
+    {
+      "org": "Republic of Korea Air Force",
+      "place": "Korea",
+      "roles": [
+        {
+          "title": "English Interpreter (Information Systems), mandatory military service",
+          "from": "2016-02",
+          "to": "2018-02"
+        }
+      ]
+    }
+  ],
+  "education": [
+    {
+      "school": "Sogang University",
+      "degree": "M.S. in Electronics Engineering",
+      "from": "2020-02",
+      "to": "2022-02"
+    },
+    {
+      "school": "Nanyang Technological University, Singapore",
+      "degree": "Exchange Student, Electrical and Electronics Engineering (AY2018-2019, Semester 2)",
+      "from": "2019",
+      "to": "2019"
+    },
+    {
+      "school": "Sogang University",
+      "degree": "B.E. in Electrical and Electronics Engineering",
+      "from": "2014-02",
+      "to": "2020-02"
+    }
+  ],
+  "publications": [
+    {
+      "kind": "journal",
+      "title": "MosaicMVS: Mosaic-Based Omnidirectional Multi-View Stereo for Indoor Scenes",
+      "authors": [
+        {
+          "name": "Min-Jung Shin",
+          "equal": true
+        },
+        {
+          "name": "Woojune Park",
+          "equal": true
+        },
+        {
+          "name": "Minji Cho"
+        },
+        {
+          "name": "Kyeongbo Kong"
+        },
+        {
+          "name": "Hoseong Son"
+        },
+        {
+          "name": "Joonsoo Kim"
+        },
+        {
+          "name": "Kug-Jin Yun"
+        },
+        {
+          "name": "Gwangsoon Lee"
+        },
+        {
+          "name": "Suk-Ju Kang"
+        }
+      ],
+      "venue": "IEEE Transactions on Multimedia",
+      "details": "vol. 26, 2024",
+      "date": "2024",
+      "doi": "10.1109/TMM.2022.3232239"
+    },
+    {
+      "kind": "journal",
+      "title": "Camera pose estimation framework for array-structured images",
+      "authors": [
+        {
+          "name": "Min-Jung Shin",
+          "equal": true
+        },
+        {
+          "name": "Woojune Park",
+          "equal": true
+        },
+        {
+          "name": "Jung Hee Kim",
+          "equal": true
+        },
+        {
+          "name": "Joonsoo Kim"
+        },
+        {
+          "name": "Kuk-Jin Yun"
+        },
+        {
+          "name": "Suk-Ju Kang"
+        }
+      ],
+      "venue": "ETRI Journal",
+      "details": "44(1):10-23, 2022",
+      "date": "2022-02",
+      "doi": "10.4218/etrij.2021-0303"
+    },
+    {
+      "kind": "conference",
+      "title": "Structured Camera Pose Estimation for Mosaic-Based Omnidirectional Imaging",
+      "authors": [
+        {
+          "name": "Woojune Park"
+        },
+        {
+          "name": "Jung Hee Kim"
+        },
+        {
+          "name": "Suk-Ju Kang"
+        },
+        {
+          "name": "Joonsoo Kim"
+        },
+        {
+          "name": "Kugjin Yun"
+        },
+        {
+          "name": "Won-Sik Cheong"
+        }
+      ],
+      "venue": "IEEE International Symposium on Circuits and Systems (ISCAS)",
+      "details": "2021",
+      "date": "2021-05",
+      "doi": "10.1109/ISCAS51556.2021.9401585"
+    },
+    {
+      "kind": "conference",
+      "title": "Understanding the Limitations of SfM-Based Camera Calibration on Multi-View Stereo Reconstruction",
+      "authors": [
+        {
+          "name": "Min-jung Shin"
+        },
+        {
+          "name": "Woojune Park"
+        },
+        {
+          "name": "Suk-ju Kang"
+        },
+        {
+          "name": "Joonsoo Kim"
+        },
+        {
+          "name": "Kugjin Yun"
+        },
+        {
+          "name": "Won-Sik Cheong"
+        }
+      ],
+      "venue": "ITC-CSCC",
+      "details": "2021",
+      "date": "2021-06",
+      "doi": "10.1109/ITC-CSCC52171.2021.9501460"
+    },
+    {
+      "kind": "domestic",
+      "title": "전방위 Light Field 영상 획득을 위한 딥러닝 기반 카메라 포즈 추정",
+      "title_en": "Omnidirectional Light Field Image Acquisition Using Deep Learning-Based Camera Pose Estimation",
+      "authors": [
+        {
+          "name": "박우준"
+        },
+        {
+          "name": "김중희"
+        },
+        {
+          "name": "김준수"
+        },
+        {
+          "name": "윤국진"
+        },
+        {
+          "name": "정원식"
+        },
+        {
+          "name": "강석주"
+        }
+      ],
+      "venue": "한국방송·미디어공학회 하계학술대회",
+      "details": "2020",
+      "date": "2020-07"
+    },
+    {
+      "kind": "domestic",
+      "title": "Single Image Super Resolution via Jointly Trained Hardware Optimized Layer-wise Quantizer",
+      "authors": [
+        {
+          "name": "박우준"
+        },
+        {
+          "name": "안세현"
+        },
+        {
+          "name": "강석주"
+        }
+      ],
+      "venue": "32nd Workshop on Image Processing and Image Understanding (IPIU)",
+      "details": "poster, 2020",
+      "date": "2020-02"
+    },
+    {
+      "kind": "patent",
+      "title": "Apparatus for estimating camera pose using multi-view image of 2D array structure and method using same",
+      "authors": [
+        {
+          "name": "Joon-soo Kim"
+        },
+        {
+          "name": "Kug-Jin Yun"
+        },
+        {
+          "name": "Jun-Young Jeong"
+        },
+        {
+          "name": "Suk-Ju Kang"
+        },
+        {
+          "name": "Jung-Hee Kim"
+        },
+        {
+          "name": "Woo-June Park"
+        }
+      ],
+      "venue": "US Patent US12205323B2",
+      "details": "granted 2025-01-21",
+      "date": "2025-01"
+    }
+  ],
+  "honors": [
+    {
+      "title": "Yuhan Foundation Scholar, 4-year full-tuition scholarship",
+      "from": "2015",
+      "to": "2019"
+    },
+    {
+      "title": "3rd Place (Encouragement Award), University Division, 5th Global Chak-Han Talent PT Competition, Korea Hana Foundation / Ministry of Unification",
+      "from": "2015-10"
+    }
+  ],
+  "activities": [
+    {
+      "title": "Impact Basecamp (IBC), 8th Cohort Participant",
+      "from": "2018-06",
+      "to": "2018-08",
+      "text": "Worked on high dropout rates among North Korean defector college students: 32 interviews, 14 solutions validated through 37 prototype tests."
+    },
+    {
+      "title": "Likelion, 2nd Cohort Member",
+      "from": "2015-06",
+      "to": "2015-10"
+    },
+    {
+      "title": "Sogang University Student Club Union, Online Promotion Manager & Social Affairs Director",
+      "from": "2015-01",
+      "to": "2016-01"
+    },
+    {
+      "title": "2015 Sogang Festival Organizing Committee, Online Promotion & Vendor Operations Lead",
+      "from": "2015-01",
+      "to": "2015-09"
+    },
+    {
+      "title": "Sogang University ACE Project Ambassador ALICE, 3rd Cohort Member",
+      "from": "2014-09",
+      "to": "2015-08"
+    }
+  ],
+  "languages": [
+    {
+      "text": "Korean (native), English (advanced)"
+    }
+  ]
+}
