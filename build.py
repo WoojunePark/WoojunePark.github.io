@@ -70,19 +70,36 @@ def authors_html(pub: dict, me: set[str]) -> str:
     return ", ".join(out)
 
 
-def pub_html(pub: dict, me: set[str]) -> str:
+def figure_html(fig: dict | None, up: str, cls: str) -> str:
+    if not fig:
+        return ""
+    cap = f'<figcaption>{escape(fig["caption"])}</figcaption>' if fig.get("caption") else ""
+    credit = f'<span class="credit">{escape(fig["credit"])}</span>' if fig.get("credit") else ""
+    return (f'<figure class="{cls}"><a href="{up}{escape(fig["file"])}"><img src="{up}{escape(fig["file"])}" '
+            f'alt="{escape(fig.get("caption") or "figure")}" loading="lazy"></a>{cap}{credit}</figure>')
+
+
+def pub_html(pub: dict, me: set[str], rich: bool = False, up: str = "") -> str:
     title = escape(pub["title"])
     if pub.get("doi"):
         title = f'<a href="https://doi.org/{escape(pub["doi"])}">{title}</a>'
     en = f'<span class="title-en">({escape(pub["title_en"])})</span>' if pub.get("title_en") else ""
     venue = escape(pub.get("venue", ""))
     details = f", {escape(pub['details'])}" if pub.get("details") else ""
-    return (f'<li class="pub"><div class="pub-title">{title} {en}</div>'
+    text = (f'<div class="pub-title">{title} {en}</div>'
             f'<div class="pub-authors">{authors_html(pub, me)}</div>'
-            f'<div class="pub-venue"><em>{venue}</em>{details}</div></li>')
+            f'<div class="pub-venue"><em>{venue}</em>{details}</div>')
+    if not rich:
+        return f'<li class="pub">{text}</li>'
+    if pub.get("abstract"):
+        src = escape(pub.get("abstract_source", ""))
+        text += (f'<details class="abstract"><summary>Abstract</summary><p>{escape(pub["abstract"])}</p>'
+                 f'<p class="src">Source: <a href="{src}">{src.split("//", 1)[-1].split("/", 1)[0]}</a></p></details>')
+    fig = figure_html(pub.get("figure"), up, "pub-fig")
+    return f'<li class="pub rich{" has-fig" if fig else ""}">{fig}<div class="pub-text">{text}</div></li>'
 
 
-def publications_html(data: dict, heading_tag: str = "h2") -> str:
+def publications_html(data: dict, heading_tag: str = "h2", rich: bool = False, up: str = "") -> str:
     me = set(data["profile"].get("me") or [data["profile"]["name"]])
     pubs = data.get("publications") or []
     parts = []
@@ -90,7 +107,7 @@ def publications_html(data: dict, heading_tag: str = "h2") -> str:
         items = [p for p in pubs if p.get("kind") == kind]
         if items:
             parts.append(f'<{heading_tag} class="pub-group">{label}</{heading_tag}>'
-                         f'<ul class="pubs">{"".join(pub_html(p, me) for p in items)}</ul>')
+                         f'<ul class="pubs">{"".join(pub_html(p, me, rich, up) for p in items)}</ul>')
     if any(a.get("equal") for p in pubs for a in p.get("authors") or []):
         note = data.get("site", {}).get("equal_contribution_note") or "# these authors contributed equally to this work"
         parts.append(f'<p class="eq-note">{escape(note)}</p>')
@@ -145,6 +162,8 @@ def page(data: dict, title: str, active: str, body: str, depth: int) -> str:
     up = "../" * depth
     nav = [("About", f"{up}index.html", "about"), ("CV", f"{up}cv/", "cv"),
            ("Publications", f"{up}publications/", "publications")]
+    if data.get("projects"):
+        nav.append(("Portfolio", f"{up}portfolio/", "portfolio"))
     nav_html = "".join(f'<a href="{h}"{" aria-current=page" if k == active else ""}>{n}</a>' for n, h, k in nav)
     if p.get("photo"):
         avatar = f'<img class="avatar" src="{up}{escape(p["photo"])}" alt="{escape(p["name"])}" width="112" height="112">'
@@ -198,19 +217,44 @@ def print_page(data: dict) -> str:
 """
 
 
+def project_html(prj: dict, up: str) -> str:
+    bullets = "".join(f"<li>{escape(b['text'])}</li>" for b in prj.get("bullets") or [])
+    tags = "".join(f'<li>{escape(t)}</li>' for t in prj.get("tags") or [])
+    when = fmt_range(prj.get("from"), prj.get("to"))
+    meta = " · ".join(x for x in (escape(prj.get("org", "")), when) if x)
+    img = figure_html(prj.get("image"), up, "prj-img")
+    return (f'<article class="project{" has-img" if img else ""}">{img}<div class="prj-text">'
+            f'<h2 class="prj-title">{escape(prj["title"])}</h2><p class="prj-meta">{meta}</p>'
+            f'<p>{escape(prj.get("summary", ""))}</p>'
+            + (f"<ul>{bullets}</ul>" if bullets else "")
+            + (f'<ul class="tags">{tags}</ul>' if tags else "") + "</div></article>")
+
+
+def assets_used(data: dict) -> list[str]:
+    files = [data["profile"].get("photo")]
+    files += [(p.get("figure") or {}).get("file") for p in data.get("publications") or []]
+    files += [(p.get("image") or {}).get("file") for p in data.get("projects") or []]
+    return [f for f in files if f]
+
+
 def build(data: dict) -> list[tuple[str, str]]:
     name = data["profile"]["name"]
     about = "".join(f"<p>{escape(a['text'])}</p>" for a in data.get("about") or [])
     pdf = cv_filename(data)
     cv = (f'<h1 class="page-title">CV</h1><p class="download"><a href="../files/{pdf}">Download PDF</a>'
           f' <span class="muted">({pdf}, updated {long_date(data["updated"])})</span></p>' + cv_body(data))
-    pubs = '<h1 class="page-title">Publications</h1>' + publications_html(data)
-    return [
+    pubs = '<h1 class="page-title">Publications</h1>' + publications_html(data, rich=True, up="../")
+    pages = [
         ("index.html", page(data, name, "about", f'<h1 class="page-title">About me</h1>{about}', 0)),
         ("cv/index.html", page(data, f"CV — {name}", "cv", cv, 1)),
         ("publications/index.html", page(data, f"Publications — {name}", "publications", pubs, 1)),
         ("cv/print.html", print_page(data)),
     ]
+    if data.get("projects"):
+        body = ('<h1 class="page-title">Portfolio</h1>'
+                + "".join(project_html(p, "../") for p in data["projects"]))
+        pages.append(("portfolio/index.html", page(data, f"Portfolio — {name}", "portfolio", body, 1)))
+    return pages
 
 
 # ------------------------------------------------------------------ pdf
@@ -242,6 +286,9 @@ def main() -> None:
     ap.add_argument("--data", default=str(ROOT / "data" / "cv.json"))
     args = ap.parse_args()
     data = json.loads(Path(args.data).read_text(encoding="utf-8"))
+    missing = [f for f in assets_used(data) if not (ROOT / f).is_file()]
+    if missing:
+        sys.exit("files named in data/cv.json are missing from this repository: " + ", ".join(missing))
     if OUT.exists():
         shutil.rmtree(OUT)
     for rel, html in build(data):
