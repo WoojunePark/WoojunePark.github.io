@@ -39,6 +39,7 @@ a:hover { text-decoration: underline; }
 .side { position: sticky; top: 24px; align-self: start; }
 .avatar { width: 112px; height: 112px; border-radius: 50%; background: var(--chip); color: var(--accent);
   display: grid; place-items: center; font-size: 2.2rem; font-weight: 700; letter-spacing: 1px; }
+img.avatar { display: block; object-fit: cover; border: 1px solid var(--line); }
 .name { font-size: 1.35rem; margin: 16px 0 0; }
 .native { margin: 0; color: var(--muted); }
 .headline { margin: 8px 0 0; }
@@ -74,7 +75,7 @@ h3.pub-group, h2.pub-group { font-size: 1rem; color: var(--muted); margin: 18px 
 sup.eq { font-size: .7em; margin-left: 1px; }
 .eq-note { font-size: .88rem; color: var(--muted); margin: 6px 0 0; }
 
-.foot { color: var(--muted); font-size: .85rem; border-top: 1px solid var(--line); padding-top: 14px; padding-bottom: 28px; }
+.foot { margin-top: 32px; color: var(--muted); font-size: .85rem; border-top: 1px solid var(--line); padding-top: 14px; padding-bottom: 28px; }
 
 @media (max-width: 760px) {
   .layout { grid-template-columns: 1fr; gap: 24px; padding-top: 24px; }

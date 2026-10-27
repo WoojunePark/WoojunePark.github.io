@@ -146,7 +146,11 @@ def page(data: dict, title: str, active: str, body: str, depth: int) -> str:
     nav = [("About", f"{up}index.html", "about"), ("CV", f"{up}cv/", "cv"),
            ("Publications", f"{up}publications/", "publications")]
     nav_html = "".join(f'<a href="{h}"{" aria-current=page" if k == active else ""}>{n}</a>' for n, h, k in nav)
-    initials = "".join(w[0] for w in p["name"].split()[:2])
+    if p.get("photo"):
+        avatar = f'<img class="avatar" src="{up}{escape(p["photo"])}" alt="{escape(p["name"])}" width="112" height="112">'
+    else:
+        initials = "".join(w[0] for w in p["name"].split()[:2])
+        avatar = f'<div class="avatar" aria-hidden="true">{escape(initials)}</div>'
     native = f'<p class="native">{escape(p["name_native"])}</p>' if p.get("name_native") else ""
     desc = escape(f'{p["name"]} — {p.get("headline", "")}')
     return f"""<!doctype html>
@@ -161,7 +165,7 @@ def page(data: dict, title: str, active: str, body: str, depth: int) -> str:
 <header class="top"><div class="wrap"><a class="brand" href="{up}index.html">{escape(p["name"])}</a><nav>{nav_html}</nav></div></header>
 <div class="wrap layout">
 <aside class="side">
-<div class="avatar" aria-hidden="true">{escape(initials)}</div>
+{avatar}
 <h1 class="name">{escape(p["name"])}</h1>{native}
 <p class="headline">{escape(p.get("headline", ""))}</p>
 <p class="loc">{escape(p.get("location", ""))}</p>
@@ -176,8 +180,10 @@ def page(data: dict, title: str, active: str, body: str, depth: int) -> str:
 
 def print_page(data: dict) -> str:
     p = data["profile"]
-    links = " · ".join(f'<a href="{escape(l["url"])}">{escape(l["url"].split("//", 1)[-1].removeprefix("www."))}</a>'
-                       for l in p.get("links") or [])
+    def shown(url: str) -> str:
+        return url.removeprefix("mailto:").split("//", 1)[-1].removeprefix("www.")
+
+    links = " · ".join(f'<a href="{escape(l["url"])}">{escape(shown(l["url"]))}</a>' for l in p.get("links") or [])
     site = data.get("site", {}).get("url", "")
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><title>{escape(p["name"])} — CV</title>
