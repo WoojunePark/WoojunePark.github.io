@@ -4,7 +4,8 @@
   --bg: #fff; --fg: #111; --muted: #555; --line: #ccc; --accent: #1f4f8f;
 }
 html:has(body.print) { font-size: 10pt; }
-body.print { font-size: 10pt; line-height: 1.42; background: #fff; color: #111; }
+body.print { font-family: "Segoe UI", "Helvetica Neue", Arial, "Liberation Sans", "Noto Sans CJK KR", "Apple SD Gothic Neo",
+  "Malgun Gothic", sans-serif; font-size: 10pt; line-height: 1.42; background: #fff; color: #111; }
 body.print a { color: var(--accent); }
 .cv-head { text-align: center; margin-bottom: 6mm; }
 .cv-head h1 { font-size: 20pt; margin: 0 0 2px; }
