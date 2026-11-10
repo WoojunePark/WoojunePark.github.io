@@ -1,7 +1,7 @@
 {
   "schema_version": "final-offer.site-public/v1",
   "updated": "2026-11-10",
-  "content_hash": "sha256:2bbb00c9338ca08b202de4b4871ffaf0878c5ed332e0e298887211c7a296e183",
+  "content_hash": "sha256:30b1e036843aa146a8db200d2e23f9ad77b01df6f8f904b8111efe126e51e95d",
   "site": {
     "url": "https://woojunepark.github.io",
     "cv_file_prefix": "CV_Woojune_Park",
@@ -129,10 +129,12 @@
           "equal": true
         },
         {
-          "name": "Minji Cho"
+          "name": "Minji Cho",
+          "equal": true
         },
         {
-          "name": "Kyeongbo Kong"
+          "name": "Kyeongbo Kong",
+          "equal": true
         },
         {
           "name": "Hoseong Son"
@@ -166,7 +168,23 @@
         "View Synthesis"
       ],
       "keywords_source": "https://ieeexplore.ieee.org/document/10005048/keywords",
-      "keywords_from": "author+index"
+      "keywords_from": "author+index",
+      "figures": [
+        {
+          "file": "assets/pubs/woojunepark-2024-tmm-mosaicmvs-fig1-omnidirectional-camera-setup-overview.png",
+          "source": "https://doi.org/10.1109/TMM.2022.3232239 (published paper, page 2)",
+          "caption": "Fig. 1. Our MosaicMVS estimates the depth of the target image using source images from a novel mosaic-based omnidirectional MVS camera setup. Red blocks represent the camera positions that are divergent to the center of the rotation.",
+          "alt": "Left: a 3D reconstruction of an indoor room with a dome of red camera frustums around a rotation centre, all facing outward. Middle: a zoomed grid of those cameras, a green target camera surrounded by numbered red source cameras. Right: RGB source views go into a MosaicMVS block that outputs an estimated depth map for the target view.",
+          "credit": "© 2024 IEEE. Reprinted from Min-Jung Shin et al., \"MosaicMVS: Mosaic-Based Omnidirectional Multi-View Stereo for Indoor Scenes,\" IEEE Transactions on Multimedia, 2024, doi:10.1109/TMM.2022.3232239."
+        },
+        {
+          "file": "assets/pubs/woojunepark-2024-tmm-mosaicmvs-fig6-qualitative-comparison-depth-estimation.png",
+          "source": "https://doi.org/10.1109/TMM.2022.3232239 (published paper, page 8)",
+          "caption": "Fig. 6. Qualitative comparison depth estimation results on SAOI scene 1.",
+          "alt": "Grid of grayscale depth maps for several indoor views of the same scene, one row per view. Columns: the RGB input, then depth from COLMAP, AACVP, CVP, SSCVP, Vis and the proposed method. COLMAP output is sparse and noisy; the proposed method gives smooth, complete depth, including on reflective furniture and plain walls.",
+          "credit": "© 2024 IEEE. Reprinted from Min-Jung Shin et al., \"MosaicMVS: Mosaic-Based Omnidirectional Multi-View Stereo for Indoor Scenes,\" IEEE Transactions on Multimedia, 2024, doi:10.1109/TMM.2022.3232239."
+        }
+      ]
     },
     {
       "id": "shin2022-etrij-array-camera-pose",
