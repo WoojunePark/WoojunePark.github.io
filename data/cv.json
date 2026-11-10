@@ -1,7 +1,7 @@
 {
   "schema_version": "final-offer.site-public/v1",
-  "updated": "2026-11-09",
-  "content_hash": "sha256:ff0f744f15ad14c03e161606619054054736e3e4b283a1e7a06f2e39d6f4c461",
+  "updated": "2026-11-10",
+  "content_hash": "sha256:2bbb00c9338ca08b202de4b4871ffaf0878c5ed332e0e298887211c7a296e183",
   "site": {
     "url": "https://woojunepark.github.io",
     "cv_file_prefix": "CV_Woojune_Park",
@@ -116,6 +116,7 @@
   ],
   "publications": [
     {
+      "id": "shin2024-tmm-mosaicmvs",
       "kind": "journal",
       "title": "MosaicMVS: Mosaic-Based Omnidirectional Multi-View Stereo for Indoor Scenes",
       "authors": [
@@ -154,9 +155,21 @@
       "date": "2024",
       "doi": "10.1109/TMM.2022.3232239",
       "abstract": "We present MosaicMVS, a novel learning-based depth estimation framework for a mosaic-based omnidirectional multi-view stereo (MVS) camera setup. It uses a regular field of view (FOV) MVS network for an omnidirectional imaging setup with explicit consideration of hypothetical voxel-wise FOV overlaps. The resulting depth predictions are accurate and agree on the omnidirectional multi-view geometry. Unlike existing MVS setups, MosaicMVS camera setup can be easily applied to omnidirectional indoor scenes without having to account for constraints such as intricate epipolar constraints and the distortion of omnidirectional cameras. We validate the effectiveness of our framework on a new challenging indoor dataset in terms of depth estimation, reconstruction, and view synthesis. We also present new evaluation metric to check reconstruction performance using post-processed masks for accurate evaluation without any ground truth depth map or laser-scanned reconstructions. Experimental results show that our framework outperforms the state-of-the-art MVS methods in a large margin in all test scenes.",
-      "abstract_source": "https://ieeexplore.ieee.org/document/10005048"
+      "abstract_source": "https://ieeexplore.ieee.org/document/10005048",
+      "publisher": "IEEE",
+      "summary": "Learning-based multi-view stereo depth estimation for a mosaic-based omnidirectional camera setup in indoor scenes, with a new indoor dataset and a mask-based reconstruction metric. Joint first author.",
+      "keywords": [
+        "Multi-view stereo",
+        "depth estimation",
+        "omnidirectional imaging",
+        "3D Reconstruction",
+        "View Synthesis"
+      ],
+      "keywords_source": "https://ieeexplore.ieee.org/document/10005048/keywords",
+      "keywords_from": "author+index"
     },
     {
+      "id": "shin2022-etrij-array-camera-pose",
       "kind": "journal",
       "title": "Camera pose estimation framework for array-structured images",
       "authors": [
@@ -188,22 +201,47 @@
       "doi": "10.4218/etrij.2021-0303",
       "abstract": "Despite the significant progress in camera pose estimation and structure-from-motion reconstruction from unstructured images, methods that exploit a priori information on camera arrangements have been overlooked. Conventional state-of-the-art methods do not exploit the geometric structure to recover accurate camera poses from a set of patch images in an array for mosaic-based imaging that creates a wide field-of-view image by sewing together a collection of regular images. We propose a camera pose estimation framework that exploits the array-structured image settings in each incremental reconstruction step. It consists of the two-way registration, the 3D point outlier elimination and the bundle adjustment with a constraint term for consistent rotation vectors to reduce reprojection errors during optimization. We demonstrate that by using individual images' connected structures at different camera pose estimation steps, we can estimate camera poses more accurately from all structured mosaic-based image sets, including omnidirectional scenes.",
       "abstract_source": "https://onlinelibrary.wiley.com/doi/full/10.4218/etrij.2021-0303",
-      "figure": {
-        "file": "assets/pubs/etri2022-fig2.png",
-        "source": "https://onlinelibrary.wiley.com/cms/asset/1bdf8dbe-0baa-436d-b8eb-88ab0dcf5704/etr212447-fig-0002-m.png",
-        "caption": "FIGURE 2 Example of generalized omnidirectional camera rig. (A) Top cross-section view of the mosaic-based omnidirectional camera rig. (B) Side cross-section view of the mosaic-based omnidirectional camera rig",
-        "credit": "© 2022 ETRI, KOGL Type 4"
-      }
+      "publisher": "Electronics and Telecommunications Research Institute (ETRI)",
+      "summary": "A camera pose estimation framework that exploits the known array structure of mosaic-based image sets (two-way registration, 3D point outlier elimination, rotation-constrained bundle adjustment), including omnidirectional scenes. Joint first author.",
+      "keywords": [
+        "camera pose estimation",
+        "mosaic-based image",
+        "omnidirectional image",
+        "structure from motion"
+      ],
+      "keywords_source": "https://onlinelibrary.wiley.com/doi/full/10.4218/etrij.2021-0303",
+      "keywords_from": "author",
+      "figures": [
+        {
+          "file": "assets/pubs/woojunepark-2022-etrij-array-camera-pose-fig2-omnidirectional-camera-rig.png",
+          "source": "https://onlinelibrary.wiley.com/cms/asset/1bdf8dbe-0baa-436d-b8eb-88ab0dcf5704/etr212447-fig-0002-m.png",
+          "caption": "FIGURE 2 Example of generalized omnidirectional camera rig. (A) Top cross-section view of the mosaic-based omnidirectional camera rig. (B) Side cross-section view of the mosaic-based omnidirectional camera rig",
+          "alt": "Two line drawings of a ring-shaped multi-camera rig. (A) Top view: cameras sit around a circle, lines from the centre mark an equal angular step between neighbours, and overlapping blue view cones show adjacent fields of view. (B) Side view: cameras lie on a vertical arc with the same overlapping cones.",
+          "credit": "© 2022 ETRI, KOGL Type 4",
+          "no_changes": true
+        },
+        {
+          "file": "assets/pubs/woojunepark-2022-etrij-array-camera-pose-fig3-framework-flowchart.jpg",
+          "source": "https://onlinelibrary.wiley.com/cms/asset/2b088e58-88d9-4f42-ae28-ad43a7d47987/etr212447-fig-0003-m.jpg",
+          "caption": "FIGURE 3 Overall flowchart of the proposed framework",
+          "alt": "Vertical flowchart. Inputs: images plus camera distortion and intrinsic parameters from calibration patterns. Steps: undistortion; correspondence search; two-way registration (vertical and horizontal image registration and essential matrix estimation, 3D point triangulation); 3D outlier elimination; fusion; bundle adjustment. Outputs: camera poses and point cloud.",
+          "credit": "© 2022 ETRI, KOGL Type 4",
+          "no_changes": true
+        }
+      ]
     },
     {
+      "id": "park2021-iscas-structured-camera-pose",
       "kind": "conference",
       "title": "Structured Camera Pose Estimation for Mosaic-Based Omnidirectional Imaging",
       "authors": [
         {
-          "name": "Woojune Park"
+          "name": "Woojune Park",
+          "equal": true
         },
         {
-          "name": "Jung Hee Kim"
+          "name": "Jung Hee Kim",
+          "equal": true
         },
         {
           "name": "Suk-Ju Kang"
@@ -223,9 +261,37 @@
       "date": "2021-05",
       "doi": "10.1109/ISCAS51556.2021.9401585",
       "abstract": "This paper presents a novel structured camera pose estimation framework for mosaic-based omnidirectional imaging, i.e., producing a wide field of view (FoV) image that covers an entire sphere of the surroundings from a set of regular FoV images. With the effective utilization of geometric priors, the proposed framework exploits an individual image's connected structure while sequentially extracting correspondence between them. In the proposed framework, 2DSfM, a structure from motion method for multi-view images in structured 2D grids, is also proposed. Additionally, we propose a constraint term for rotation vectors in the bundle adjustment process that efficiently incorporates structural priors. We demonstrate our framework on structured omnidirectional image scenes and compare to existing frameworks. The experimental results show that our framework outperforms well-known conventional frameworks regarding both average reprojection error and reconstruction results.",
-      "abstract_source": "https://ieeexplore.ieee.org/document/9401585"
+      "abstract_source": "https://ieeexplore.ieee.org/document/9401585",
+      "publisher": "IEEE",
+      "summary": "Structured camera pose estimation for mosaic-based omnidirectional imaging: 2DSfM, a structure-from-motion method for images in structured 2D grids, plus a rotation-vector constraint in bundle adjustment. Joint first author.",
+      "keywords": [
+        "Camera pose estimation",
+        "omnidirectional imaging",
+        "structure from motion",
+        "Bundle Adjustment",
+        "Reprojection Error"
+      ],
+      "keywords_source": "paper page 1 (Index Terms); https://ieeexplore.ieee.org/document/9401585/keywords",
+      "keywords_from": "author+index",
+      "figures": [
+        {
+          "file": "assets/pubs/woojunepark-2021-iscas-structured-camera-pose-fig1-framework-overview.png",
+          "source": "https://doi.org/10.1109/ISCAS51556.2021.9401585 (published paper, page 2)",
+          "caption": "Fig. 1. Overall flow of the proposed framework.",
+          "alt": "Block diagram, left to right: input images with internal camera parameters; correspondence search (feature extraction, feature matching, outlier elimination); 2DSfM (initialization, 2D image registration, triangulation), loop closure and bundle adjustment with a re-triangulation loop; output camera poses and 3D structure.",
+          "credit": "© 2021 IEEE. Reprinted from Woojune Park et al., \"Structured Camera Pose Estimation for Mosaic-Based Omnidirectional Imaging,\" IEEE International Symposium on Circuits and Systems (ISCAS), 2021, doi:10.1109/ISCAS51556.2021.9401585."
+        },
+        {
+          "file": "assets/pubs/woojunepark-2021-iscas-structured-camera-pose-fig2-pose-comparison.png",
+          "source": "https://doi.org/10.1109/ISCAS51556.2021.9401585 (published paper, page 3)",
+          "caption": "Fig. 2. Comparison of pose estimation frameworks on the ETRI 360° dataset scene 1. Camera position of each image is visualized as a red block.",
+          "alt": "Three renderings of estimated camera positions as small red boxes forming a spherical shell. (a) VSFM: a shell with slightly uneven rows. (b) COLMAP: a gap in the shell and a strip of cameras detached outside it. (c) Proposed: a closed, regular shell, with a black axis marker on one camera.",
+          "credit": "© 2021 IEEE. Reprinted from Woojune Park et al., \"Structured Camera Pose Estimation for Mosaic-Based Omnidirectional Imaging,\" IEEE International Symposium on Circuits and Systems (ISCAS), 2021, doi:10.1109/ISCAS51556.2021.9401585."
+        }
+      ]
     },
     {
+      "id": "shin2021-itccscc-sfm-calibration-limits",
       "kind": "conference",
       "title": "Understanding the Limitations of SfM-Based Camera Calibration on Multi-View Stereo Reconstruction",
       "authors": [
@@ -253,9 +319,20 @@
       "date": "2021-06",
       "doi": "10.1109/ITC-CSCC52171.2021.9501460",
       "abstract": "The recent success on convolutional neural networks (CNNs) research has triggered the interest to improve the stereo reconstruction. There have been many considerations to reconstruct unstructured general images. However, photos taken in an unstructured environment are not well applied to previous research techniques. This paper proposes a robust method in this special environment. First, camera parameters are extracted using two types of Structure-from-Motion (SfM). In general, intrinsic camera parameters are extracted via camera calibration, and extrinsic parameters are computed by SfM. After that, we put these parameters as an input into two types of multiview stereo methods and compare the results of each methods. Finally, the structured indoor dataset which is called ETRI 360° dataset has better reconstruction results compared with unstructured dataset by using specific SfM and MVS methods.",
-      "abstract_source": "https://ieeexplore.ieee.org/document/9501460"
+      "abstract_source": "https://ieeexplore.ieee.org/document/9501460",
+      "publisher": "IEEE",
+      "summary": "Compares two Structure-from-Motion camera calibrations as input to two multi-view stereo methods, and shows better reconstructions on the structured ETRI 360° indoor dataset than on unstructured data. Second author.",
+      "keywords": [
+        "Multi-view stereo",
+        "3D reconstruction",
+        "SfM",
+        "Camera calibration"
+      ],
+      "keywords_source": "https://ieeexplore.ieee.org/document/9501460/keywords",
+      "keywords_from": "author"
     },
     {
+      "id": "park2020-kibme-omni-lightfield-pose",
       "kind": "domestic",
       "title": "전방위 Light Field 영상 획득을 위한 딥러닝 기반 카메라 포즈 추정",
       "title_en": "Omnidirectional Light Field Image Acquisition Using Deep Learning-Based Camera Pose Estimation",
@@ -281,9 +358,18 @@
       ],
       "venue": "한국방송·미디어공학회 하계학술대회",
       "details": "2020",
-      "date": "2020-07"
+      "date": "2020-07",
+      "summary": "Deep-learning-based camera pose estimation for acquiring omnidirectional light field images. First author.",
+      "keywords": [
+        "omnidirectional light field",
+        "camera pose estimation",
+        "deep learning"
+      ],
+      "keywords_source": "paper title (no author keywords available)",
+      "keywords_from": "title"
     },
     {
+      "id": "park2020-ipiu-sisr-quantizer",
       "kind": "domestic",
       "title": "Single Image Super Resolution via Jointly Trained Hardware Optimized Layer-wise Quantizer",
       "authors": [
@@ -299,9 +385,18 @@
       ],
       "venue": "32nd Workshop on Image Processing and Image Understanding (IPIU)",
       "details": "poster, 2020",
-      "date": "2020-02"
+      "date": "2020-02",
+      "summary": "Single-image super-resolution with a hardware-optimized, layer-wise quantizer trained jointly with the network (poster). First author.",
+      "keywords": [
+        "single image super resolution",
+        "layer-wise quantizer",
+        "hardware optimization"
+      ],
+      "keywords_source": "paper title (no abstract or author keywords available)",
+      "keywords_from": "title"
     },
     {
+      "id": "kim2025-us12205323b2-camera-pose-2d-array",
       "kind": "patent",
       "title": "Apparatus for estimating camera pose using multi-view image of 2D array structure and method using same",
       "authors": [
@@ -329,12 +424,32 @@
       "date": "2025-01",
       "abstract": "Disclosed herein are an apparatus for estimating a camera pose using multi-view images of a 2D array structure and a method using the same. The method performed by the apparatus includes acquiring multi-view images from a 2D array camera system, forming a 2D image link structure corresponding to the multi-view images in consideration of the geometric structure of the camera system, estimating an initial camera pose based on an adjacent image extracted from the 2D image link structure and a pair of corresponding feature points, and estimating a final camera pose by reconstructing a 3D structure based on the initial camera pose and performing correction so as to minimize a reprojection error of the reconstructed 3D structure.",
       "abstract_source": "https://patents.google.com/patent/US12205323B2/en",
-      "figure": {
-        "file": "assets/pubs/us12205323-fig3.png",
-        "source": "https://patentimages.storage.googleapis.com/6d/e6/4a/21e912a947283e/US12205323-20250121-D00003.png",
-        "caption": "FIG. 3 is a flowchart illustrating a method for estimating a camera pose according to an embodiment of the present invention",
-        "credit": "US 12,205,323 B2 drawing"
-      }
+      "summary": "Granted US patent on estimating camera poses from multi-view images of a 2D array camera system through a 2D image link structure and reprojection-error correction; extends the ISCAS 2021 work.",
+      "keywords": [
+        "Camera pose",
+        "multi-view images",
+        "2D array camera system",
+        "2D image link structure",
+        "reprojection error"
+      ],
+      "keywords_source": "https://patents.google.com/patent/US12205323B2/en",
+      "keywords_from": "cpc+abstract",
+      "figures": [
+        {
+          "file": "assets/pubs/woojunepark-2025-us12205323b2-camera-pose-2d-array-fig3-method-flowchart.png",
+          "source": "https://patentimages.storage.googleapis.com/6d/e6/4a/21e912a947283e/US12205323-20250121-D00003.png",
+          "caption": "FIG. 3 is a flowchart illustrating a method for estimating a camera pose according to an embodiment of the present invention",
+          "alt": "Flowchart with four boxes between Start and End: acquire multi-view images (S310), form a 2D image link structure (S320), estimate an initial camera pose (S330), and estimate the final camera pose (S340).",
+          "credit": "US 12,205,323 B2, FIG. 3 (USPTO drawing)"
+        },
+        {
+          "file": "assets/pubs/woojunepark-2025-us12205323b2-camera-pose-2d-array-fig5-2d-array-camera-system.png",
+          "source": "https://patentimages.storage.googleapis.com/4d/16/c1/de915b8cfc7441/US12205323-20250121-D00005.png",
+          "caption": "FIGS. 5 to 6 are views illustrating an example of a 2D array camera system according to the present invention (FIG. 5 shown)",
+          "alt": "3D plot of camera positions in a 2D array camera system: wireframe camera frustums arranged in concentric rings on a horizontal plane, every camera facing outward from the centre, drawn inside a box with labelled x, y and z axes.",
+          "credit": "US 12,205,323 B2, FIG. 5 (USPTO drawing)"
+        }
+      ]
     }
   ],
   "projects": [
@@ -417,10 +532,12 @@
         "Deep learning"
       ],
       "image": {
-        "file": "assets/pubs/etri2022-fig2.png",
+        "file": "assets/pubs/woojunepark-2022-etrij-array-camera-pose-fig2-omnidirectional-camera-rig.png",
         "source": "https://onlinelibrary.wiley.com/cms/asset/1bdf8dbe-0baa-436d-b8eb-88ab0dcf5704/etr212447-fig-0002-m.png",
         "caption": "Mosaic-based omnidirectional camera rig (ETRI Journal, Figure 2)",
-        "credit": "© 2022 ETRI, KOGL Type 4"
+        "alt": "Two line drawings of a ring-shaped multi-camera rig. (A) Top view: cameras sit around a circle, lines from the centre mark an equal angular step between neighbours, and overlapping blue view cones show adjacent fields of view. (B) Side view: cameras lie on a vertical arc with the same overlapping cones.",
+        "credit": "© 2022 ETRI, KOGL Type 4",
+        "no_changes": true
       }
     }
   ],
