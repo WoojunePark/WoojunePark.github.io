@@ -17,5 +17,7 @@ body.print h2, body.print h3.pub-group { break-after: avoid; }
 body.print section:last-of-type { break-inside: avoid; }
 body.print .row { margin: 1mm 0 2mm; }
 body.print .pub { margin-bottom: 2mm; }
+body.print .pub-summary { font-size: 9pt; margin: .4mm 0 0; }
+body.print .pub-kw { font-size: 8.5pt; margin: .2mm 0 0; }
 body.print .row ul { margin-top: 1mm; }
 .cv-updated { margin-top: 6mm; color: var(--muted); font-size: 8.5pt; text-align: right; }

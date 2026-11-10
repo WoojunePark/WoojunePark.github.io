@@ -70,13 +70,73 @@ def authors_html(pub: dict, me: set[str]) -> str:
     return ", ".join(out)
 
 
+def pub_figures(pub: dict) -> list[dict]:
+    """`figures` (list, current schema) or the single `figure` (older exports); at most two."""
+    figs = pub.get("figures")
+    if not isinstance(figs, list):
+        figs = [pub["figure"]] if isinstance(pub.get("figure"), dict) else []
+    return [f for f in figs if isinstance(f, dict) and f.get("file")][:2]
+
+
+def source_link(url: str | None) -> str:
+    """'https://doi.org/... — note' -> a link on the URL part, the rest as text."""
+    if not url:
+        return ""
+    head, _, rest = str(url).partition(" ")
+    if head.startswith("http"):
+        host = head.split("//", 1)[-1].split("/", 1)[0]
+        return f'<a href="{escape(head)}">{escape(host)}</a>' + (f" {escape(rest)}" if rest else "")
+    return escape(str(url))
+
+
+def image_size(rel: str) -> tuple[int, int] | None:
+    """(width, height) of a PNG or JPEG in this repository, from its header; None if unknown."""
+    try:
+        b = (ROOT / rel).read_bytes()[:256 * 1024]
+    except OSError:
+        return None
+    if b[:8] == b"\x89PNG\r\n\x1a\n":
+        return int.from_bytes(b[16:20], "big"), int.from_bytes(b[20:24], "big")
+    i = 2 if b[:2] == b"\xff\xd8" else len(b)
+    while i + 9 < len(b):
+        if b[i] != 0xFF:
+            i += 1
+            continue
+        m = b[i + 1]
+        if m in (0xC0, 0xC1, 0xC2, 0xC3, 0xC5, 0xC6, 0xC7, 0xC9, 0xCA, 0xCB, 0xCD, 0xCE, 0xCF):
+            return int.from_bytes(b[i + 7:i + 9], "big"), int.from_bytes(b[i + 5:i + 7], "big")
+        if m in (0xD8, 0x01) or 0xD0 <= m <= 0xD7:
+            i += 2
+            continue
+        i += 2 + int.from_bytes(b[i + 2:i + 4], "big")
+    return None
+
+
 def figure_html(fig: dict | None, up: str, cls: str) -> str:
     if not fig:
         return ""
-    cap = f'<figcaption>{escape(fig["caption"])}</figcaption>' if fig.get("caption") else ""
-    credit = f'<span class="credit">{escape(fig["credit"])}</span>' if fig.get("credit") else ""
+    cap = escape(fig["caption"]) if fig.get("caption") else ""
+    extra = []
+    if fig.get("credit"):
+        extra.append(f'<span class="credit">{escape(fig["credit"])}</span>')
+    if fig.get("source"):
+        extra.append(f'<span class="credit">Source: {source_link(fig["source"])}</span>')
+    alt = fig.get("alt") or fig.get("caption") or "figure"
+    size = image_size(fig["file"])
+    dims = f' width="{size[0]}" height="{size[1]}"' if size else ""
+    if size and size[0] > 2.5 * size[1]:
+        cls += " wide"   # a wide diagram gets the full row on the Publications page
     return (f'<figure class="{cls}"><a href="{up}{escape(fig["file"])}"><img src="{up}{escape(fig["file"])}" '
-            f'alt="{escape(fig.get("caption") or "figure")}" loading="lazy"></a>{cap}{credit}</figure>')
+            f'alt="{escape(alt)}"{dims} loading="lazy" decoding="async"></a>'
+            f'<figcaption>{cap}{"".join(extra)}</figcaption></figure>')
+
+
+def keywords_html(pub: dict) -> str:
+    kws = [k for k in pub.get("keywords") or [] if isinstance(k, str)]
+    if not kws:
+        return ""
+    return ('<p class="pub-kw"><span class="kw-label">Keywords:</span> '
+            + "; ".join(f'<span class="kw">{escape(k)}</span>' for k in kws) + "</p>")
 
 
 def pub_html(pub: dict, me: set[str], rich: bool = False, up: str = "") -> str:
@@ -89,14 +149,65 @@ def pub_html(pub: dict, me: set[str], rich: bool = False, up: str = "") -> str:
     text = (f'<div class="pub-title">{title} {en}</div>'
             f'<div class="pub-authors">{authors_html(pub, me)}</div>'
             f'<div class="pub-venue"><em>{venue}</em>{details}</div>')
+    summary = f'<p class="pub-summary">{escape(pub["summary"])}</p>' if pub.get("summary") else ""
+    text += summary + keywords_html(pub)
     if not rich:
         return f'<li class="pub">{text}</li>'
     if pub.get("abstract"):
-        src = escape(pub.get("abstract_source", ""))
         text += (f'<details class="abstract"><summary>Abstract</summary><p>{escape(pub["abstract"])}</p>'
-                 f'<p class="src">Source: <a href="{src}">{src.split("//", 1)[-1].split("/", 1)[0]}</a></p></details>')
-    fig = figure_html(pub.get("figure"), up, "pub-fig")
-    return f'<li class="pub rich{" has-fig" if fig else ""}">{fig}<div class="pub-text">{text}</div></li>'
+                 f'<p class="src">Source: {source_link(pub.get("abstract_source"))}</p></details>')
+    figs = "".join(figure_html(f, up, "pub-fig") for f in pub_figures(pub))
+    figs = f'<div class="pub-figs">{figs}</div>' if figs else ""
+    return f'<li class="pub rich"{pub_anchor(pub)}><div class="pub-text">{text}</div>{figs}</li>'
+
+
+def pub_anchor(pub: dict) -> str:
+    return f' id="{escape(pub["id"])}"' if pub.get("id") else ""
+
+
+def scholarly_jsonld(data: dict) -> str:
+    """schema.org ScholarlyArticle (papers) / CreativeWork (patents) per publication, for crawlers and LLM readers."""
+    base = (data.get("site", {}).get("url") or "").rstrip("/")
+    graph = []
+    for pub in data.get("publications") or []:
+        kind = pub.get("kind")
+        item = {"@type": "CreativeWork" if kind == "patent" else "ScholarlyArticle",
+                "name": pub.get("title"), "headline": pub.get("title"),
+                "author": [{"@type": "Person", "name": a["name"]} for a in pub.get("authors") or []]}
+        if pub.get("id"):
+            item["@id"] = f"{base}/publications/#{pub['id']}"
+            item["url"] = item["@id"]
+        if kind == "patent":
+            item["additionalType"] = "Patent"
+        if pub.get("title_en"):
+            item["alternateName"] = pub["title_en"]
+        if any(ord(c) > 0x3000 for c in pub.get("title", "")):
+            item["inLanguage"] = "ko"
+        if pub.get("date"):
+            item["datePublished"] = str(pub["date"])
+        if pub.get("venue"):
+            item["isPartOf"] = {"@type": "Periodical" if kind == "journal" else "CreativeWork", "name": pub["venue"]}
+        if pub.get("publisher"):
+            item["publisher"] = {"@type": "Organization", "name": pub["publisher"]}
+        if pub.get("summary"):
+            item["description"] = pub["summary"]
+        if pub.get("abstract"):
+            item["abstract"] = pub["abstract"]
+        if pub.get("keywords"):
+            item["keywords"] = ", ".join(pub["keywords"])
+        if pub.get("doi"):
+            item["sameAs"] = f"https://doi.org/{pub['doi']}"
+            item["identifier"] = {"@type": "PropertyValue", "propertyID": "DOI", "value": pub["doi"]}
+        imgs = [{"@type": "ImageObject", "contentUrl": f"{base}/{f['file']}", "caption": f.get("caption"),
+                 "description": f.get("alt"), "creditText": f.get("credit")} for f in pub_figures(pub)]
+        if imgs:
+            item["image"] = [{k: v for k, v in i.items() if v} for i in imgs]
+        graph.append({k: v for k, v in item.items() if v})
+    if not graph:
+        return ""
+    doc = {"@context": "https://schema.org", "@graph": graph}
+    return ('<script type="application/ld+json">'
+            + json.dumps(doc, ensure_ascii=False, indent=1).replace("</", "<\\/") + "</script>")
 
 
 def publications_html(data: dict, heading_tag: str = "h2", rich: bool = False, up: str = "") -> str:
@@ -157,7 +268,7 @@ def links_html(data: dict) -> str:
     return f'<ul class="links">{"".join(items)}</ul>'
 
 
-def page(data: dict, title: str, active: str, body: str, depth: int) -> str:
+def page(data: dict, title: str, active: str, body: str, depth: int, head_extra: str = "") -> str:
     p = data["profile"]
     up = "../" * depth
     nav = [("About", f"{up}index.html", "about"), ("CV", f"{up}cv/", "cv"),
@@ -180,6 +291,7 @@ def page(data: dict, title: str, active: str, body: str, depth: int) -> str:
 <meta property="og:title" content="{escape(title)}"><meta property="og:description" content="{desc}">
 <link rel="canonical" href="{escape(data.get('site', {}).get('url', ''))}/">
 <link rel="stylesheet" href="{up}assets/style.css">
+{head_extra}
 </head><body>
 <header class="top"><div class="wrap"><a class="brand" href="{up}index.html">{escape(p["name"])}</a><nav>{nav_html}</nav></div></header>
 <div class="wrap layout">
@@ -232,7 +344,7 @@ def project_html(prj: dict, up: str) -> str:
 
 def assets_used(data: dict) -> list[str]:
     files = [data["profile"].get("photo")]
-    files += [(p.get("figure") or {}).get("file") for p in data.get("publications") or []]
+    files += [f.get("file") for p in data.get("publications") or [] for f in pub_figures(p)]
     files += [(p.get("image") or {}).get("file") for p in data.get("projects") or []]
     return [f for f in files if f]
 
@@ -246,8 +358,9 @@ def build(data: dict) -> list[tuple[str, str]]:
     pubs = '<h1 class="page-title">Publications</h1>' + publications_html(data, rich=True, up="../")
     pages = [
         ("index.html", page(data, name, "about", f'<h1 class="page-title">About me</h1>{about}', 0)),
-        ("cv/index.html", page(data, f"CV — {name}", "cv", cv, 1)),
-        ("publications/index.html", page(data, f"Publications — {name}", "publications", pubs, 1)),
+        ("cv/index.html", page(data, f"CV — {name}", "cv", cv, 1, scholarly_jsonld(data))),
+        ("publications/index.html", page(data, f"Publications — {name}", "publications", pubs, 1,
+                                         scholarly_jsonld(data))),
         ("cv/print.html", print_page(data)),
     ]
     if data.get("projects"):
