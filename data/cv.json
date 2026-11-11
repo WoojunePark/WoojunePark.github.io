@@ -1,7 +1,7 @@
 {
   "schema_version": "final-offer.site-public/v1",
-  "updated": "2026-11-10",
-  "content_hash": "sha256:30b1e036843aa146a8db200d2e23f9ad77b01df6f8f904b8111efe126e51e95d",
+  "updated": "2026-11-11",
+  "content_hash": "sha256:7969303c7860fbd1c4deeb3303be771f2e4b9b018465fbc0bb4242510d2b6e85",
   "site": {
     "url": "https://woojunepark.github.io",
     "cv_file_prefix": "CV_Woojune_Park",
@@ -492,7 +492,14 @@
         "nDisplay",
         "HTC Vive",
         "V-Ray"
-      ]
+      ],
+      "image": {
+        "file": "assets/pubs/woojunepark-2026-lge-3dgs-display-demo-fig1-pipeline.svg",
+        "source": "Original diagram drawn for this site from the cited claims, 2026-11-11",
+        "caption": "Display demo pipeline: V-Ray renders, 3D Gaussian Splatting, Unreal Engine 5 nDisplay with HTC Vive tracking, real-time parallax at 4K.",
+        "alt": "Block diagram. A box labelled V-Ray renders points down to a filled black box labelled 3D Gaussian Splatting, which points right to a box labelled Unreal Engine 5 nDisplay. A box labelled HTC Vive tracking points down into the same nDisplay box. A red arrow leads from it to a red box that reads real-time parallax, 4K.",
+        "credit": "Diagram drawn for this site"
+      }
     },
     {
       "title": "Automated 3D Asset Optimization for Mobile AR on LG.com",
@@ -514,7 +521,14 @@
         "3ds Max",
         "V-Ray",
         "Web/Mobile AR"
-      ]
+      ],
+      "image": {
+        "file": "assets/pubs/woojunepark-2026-lge-3d-asset-optimization-fig1-file-size.svg",
+        "source": "Original diagram drawn for this site from the cited claims, 2026-11-11",
+        "caption": "Average file size of a 3ds Max + V-Ray asset before and after optimization, about 4 GB and about 4 MB, with the two areas drawn to scale; 200+ assets.",
+        "alt": "A large black square labelled about 4 GB, 3ds Max + V-Ray asset. An arrow runs from it to a very small red square labelled about 4 MB, web and mobile AR. The two squares are in proportion to the two file sizes, so the red one is barely visible. Text at the top right reads 200+ assets.",
+        "credit": "Diagram drawn for this site"
+      }
     },
     {
       "title": "Asset Optimization Agent (MCP + LangGraph)",
@@ -525,7 +539,14 @@
         "LangGraph",
         "LLM agents",
         "3D asset optimization"
-      ]
+      ],
+      "image": {
+        "file": "assets/pubs/woojunepark-2026-lge-asset-optimization-agent-fig1-agent-loop.svg",
+        "source": "Original diagram drawn for this site from the cited claims, 2026-11-11",
+        "caption": "A marketer runs 3D asset optimization through the MCP-based tool; the LangGraph agent adds agentic optimization loops.",
+        "alt": "Three boxes in a row joined by arrows: Marketer, then a filled black box labelled MCP tool, then 3D asset optimization. A red curved arrow returns from the last box to the MCP tool box. Red text below reads LangGraph agent, agentic optimization loops.",
+        "credit": "Diagram drawn for this site"
+      }
     },
     {
       "title": "Camera Pose Estimation and Multi-View Stereo for Mosaic-Based Omnidirectional Imaging",
@@ -533,7 +554,7 @@
       "summary": "Camera pose estimation for array-structured (mosaic-based) omnidirectional camera setups, and learning-based multi-view stereo depth estimation on top of them.",
       "bullets": [
         {
-          "text": "Structured camera pose estimation for mosaic-based omnidirectional imaging (IEEE ISCAS, first author), later extended into a granted US patent; a camera pose estimation framework for array-structured images (ETRI Journal, joint first author)."
+          "text": "Structured camera pose estimation for mosaic-based omnidirectional imaging (IEEE ISCAS, joint first author), later extended into a granted US patent; a camera pose estimation framework for array-structured images (ETRI Journal, joint first author)."
         },
         {
           "text": "MosaicMVS, a learning-based multi-view stereo framework for mosaic-based omnidirectional indoor scenes (IEEE Transactions on Multimedia, joint first author)."
@@ -596,6 +617,39 @@
       "title": "Sogang University ACE Project Ambassador ALICE, 3rd Cohort Member",
       "from": "2014-09",
       "to": "2015-08"
+    }
+  ],
+  "skills": [
+    {
+      "group": "3D vision and reconstruction",
+      "items": [
+        "3D Gaussian Splatting",
+        "Camera pose estimation",
+        "Multi-view stereo",
+        "SfM-based camera calibration",
+        "Omnidirectional imaging",
+        "Single image super resolution",
+        "Deep learning"
+      ]
+    },
+    {
+      "group": "3D graphics and real-time rendering",
+      "items": [
+        "Unreal Engine 5 nDisplay",
+        "HTC Vive tracking",
+        "V-Ray",
+        "3ds Max",
+        "Web and mobile AR",
+        "3D asset optimization"
+      ]
+    },
+    {
+      "group": "AI agents",
+      "items": [
+        "MCP",
+        "LangGraph",
+        "Agentic optimization loops"
+      ]
     }
   ],
   "languages": [
