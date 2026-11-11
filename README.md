@@ -25,6 +25,14 @@ publish-cv-site.yml: final-offer site export ──► data/cv.json + assets/pub
 - `updated` (shown on the pages and in the PDF file name) changes only when the exported content changes.
 - Joint first authors carry `#`, explained by the note "# these authors contributed equally to this work".
 - Layout and style live here: `build.py` (standard library only), `assets/`.
+- Design: a Swiss grid in black on white with one red (`DESIGN.md`). The home page leads with the name, the
+  current role and Selected work; each project row sets its result sentences large beside its figure. Product
+  context is in `PRODUCT.md`, the direction contract in `.impeccable/surfaces/`.
+- For machine readers the build also writes `cv.md` (the full CV as Markdown), `llms.txt`, `sitemap.xml`,
+  `robots.txt`, a schema.org `Person` on every page and a `ProfilePage` on the home page. All of it is derived from
+  `data/cv.json`; nothing is written by hand.
+- The `3D vision` / `AI agents` codes on projects are read from words already in the data (`AGENT_WORDS` in `build.py`).
+- The display face is Archivo (SIL OFL 1.1), a self-hosted Latin subset in `assets/fonts/`.
 
 Local preview: `python build.py --pdf` (needs Chrome or Edge; set `CHROME` if it is not found), then open `_site/index.html`.
 

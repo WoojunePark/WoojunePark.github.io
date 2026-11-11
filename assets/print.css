@@ -1,23 +1,38 @@
-/* PDF CV (cv/print.html). Always light, A4, compact. */
+/* PDF CV (cv/print.html). Always light, A4, compact, one text column for parsers. Loaded after style.css. */
 @page { size: A4; margin: 16mm 15mm 16mm; }
-:root, :root:not([data-theme="light"]) {
-  --bg: #fff; --fg: #111; --muted: #555; --line: #ccc; --accent: #1f4f8f;
-}
+:root { --bg: #fff; --ink: #111; --muted: #555; --soft: #ccc; --link: #1f4f8f; }
 html:has(body.print) { font-size: 10pt; }
 body.print { font-family: "Segoe UI", "Helvetica Neue", Arial, "Liberation Sans", "Noto Sans CJK KR", "Apple SD Gothic Neo",
   "Malgun Gothic", sans-serif; font-size: 10pt; line-height: 1.42; background: #fff; color: #111; }
-body.print a { color: var(--accent); }
+body.print a { color: var(--link); text-decoration: none; }
 .cv-head { text-align: center; margin-bottom: 6mm; }
 .cv-head h1 { font-size: 20pt; margin: 0 0 2px; }
 .cv-head p { margin: 1px 0; color: var(--muted); }
-body.print h2 { font-size: 11.5pt; margin: 5mm 0 2mm; padding-bottom: 1mm; text-transform: uppercase; letter-spacing: .04em; }
-body.print h3.pub-group { font-size: 10pt; margin: 2.5mm 0 1mm; }
-body.print .org, body.print .row, body.print .pub { break-inside: avoid; }
-body.print h2, body.print h3.pub-group { break-after: avoid; }
-body.print section:last-of-type { break-inside: avoid; }
-body.print .row { margin: 1mm 0 2mm; }
-body.print .pub { margin-bottom: 2mm; }
+body.print .band { display: block; border: 0; padding: 0; }
+body.print .band-head { margin: 0; }
+body.print .band-note { display: none; }
+body.print h2 { font-size: 11.5pt; margin: 5mm 0 2mm; padding-bottom: 1mm; border-bottom: 1px solid var(--soft);
+  text-transform: uppercase; letter-spacing: .04em; }
+body.print .org + .org { margin-top: 2mm; }
+body.print .org-name { display: flex; justify-content: space-between; font-size: 10pt; margin: 0; border: 0; padding: 0; }
+body.print .org-place { font-size: 9pt; }
+body.print .pub-group { font-size: 10pt; margin: 2.5mm 0 1mm; border: 0; padding: 0; color: var(--muted); }
+body.print .e, body.print .e + .e { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 4mm; margin: 0;
+  border: 0; padding: 0 0 2mm; break-inside: avoid; }
+body.print .e-title { grid-column: 1; grid-row: 1; font-size: 10pt; font-weight: 600; }
+body.print .e-when { grid-column: 2; grid-row: 1; margin: 0; font-size: 9pt; white-space: nowrap; text-align: right; }
+body.print .e.now .e-when::before { display: none; }
+body.print .e-rest { grid-column: 1 / -1; grid-row: 2; margin: 0; }
+body.print .e-rest ul { margin-top: .6mm; max-width: none; }
+body.print .e-rest li { margin: .4mm 0; }
+body.print .e-rest > p { max-width: none; }
+body.print .pub-authors, body.print .pub-venue { font-size: 9.5pt; margin: 0; }
 body.print .pub-summary { font-size: 9pt; margin: .4mm 0 0; }
 body.print .pub-kw { font-size: 8.5pt; margin: .2mm 0 0; }
-body.print .row ul { margin-top: 1mm; }
+body.print .skills { display: grid; grid-template-columns: 1fr; gap: .8mm; }
+body.print .skill { display: grid; grid-template-columns: 52mm minmax(0, 1fr); column-gap: 3mm; }
+body.print .skills dt { font-weight: 600; font-size: 10pt; border: 0; padding: 0; margin: 0; }
+body.print .skills dd { font-size: 10pt; }
+body.print h2, body.print .pub-group, body.print .org-name { break-after: avoid; }
+body.print .band:last-of-type { break-inside: avoid; }
 .cv-updated { margin-top: 6mm; color: var(--muted); font-size: 8.5pt; text-align: right; }

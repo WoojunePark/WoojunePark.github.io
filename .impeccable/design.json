@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-11T00:00:00Z",
+  "title": "Design System: Woojune Park CV site",
+  "extensions": {
+    "colorMeta": {
+      "red": { "role": "primary", "displayName": "Signal Red", "canonical": "#d81e15", "tonalRamp": ["oklch(18% 0.06 28)", "oklch(29% 0.11 28)", "oklch(40% 0.16 28)", "oklch(50% 0.20 28)", "oklch(56% 0.22 28)", "oklch(70% 0.15 28)", "oklch(85% 0.07 28)", "oklch(95% 0.025 28)"] },
+      "bg": { "role": "neutral", "displayName": "Poster White", "canonical": "#ffffff", "tonalRamp": ["oklch(15% 0 0)", "oklch(30% 0 0)", "oklch(45% 0 0)", "oklch(60% 0 0)", "oklch(75% 0 0)", "oklch(88% 0 0)", "oklch(95% 0 0)", "oklch(100% 0 0)"] },
+      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "#0b0b0c", "tonalRamp": ["oklch(15% 0.002 285)", "oklch(26% 0.003 285)", "oklch(38% 0.003 285)", "oklch(50% 0.003 285)", "oklch(63% 0.003 285)", "oklch(76% 0.002 285)", "oklch(88% 0.002 285)", "oklch(95% 0.001 285)"] },
+      "muted": { "role": "neutral", "displayName": "Grey Ink", "canonical": "#5c6066", "tonalRamp": ["oklch(18% 0.008 255)", "oklch(30% 0.010 255)", "oklch(40% 0.011 255)", "oklch(49% 0.011 255)", "oklch(62% 0.010 255)", "oklch(75% 0.008 255)", "oklch(88% 0.005 255)", "oklch(95% 0.003 255)"] },
+      "soft": { "role": "neutral", "displayName": "Hairline", "canonical": "#e3e4e6", "tonalRamp": ["oklch(20% 0.004 260)", "oklch(34% 0.004 260)", "oklch(48% 0.004 260)", "oklch(62% 0.004 260)", "oklch(76% 0.004 260)", "oklch(86% 0.003 260)", "oklch(92% 0.003 260)", "oklch(96% 0.002 260)"] },
+      "print-bg": { "role": "neutral", "displayName": "Print Paper (PDF only)", "canonical": "#fff" },
+      "print-ink": { "role": "neutral", "displayName": "Print Ink (PDF only)", "canonical": "#111" },
+      "print-muted": { "role": "neutral", "displayName": "Print Grey (PDF only)", "canonical": "#555" },
+      "print-rule": { "role": "neutral", "displayName": "Print Rule (PDF only)", "canonical": "#ccc" },
+      "print-link": { "role": "neutral", "displayName": "Print Link (PDF only)", "canonical": "#1f4f8f" }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "The name on the home page, across nine columns. Endpoints 3.25rem and 8.25rem." },
+      "page-title": { "displayName": "Page title", "purpose": "The title of the CV, Publications and Portfolio pages. Endpoints 2.75rem and 5.5rem." },
+      "headline": { "displayName": "Headline", "purpose": "Project titles. Endpoints 1.6875rem and 2.25rem." },
+      "lede": { "displayName": "Lede", "purpose": "The single opening sentence on the home page, max 28em. Endpoints 1.375rem and 1.9375rem." },
+      "name-sub": { "displayName": "Name line", "purpose": "The grey line under the name. Endpoints 1.125rem and 1.625rem." },
+      "band-label": { "displayName": "Band label", "purpose": "The heading that names each band in the label column." },
+      "result": { "displayName": "Result", "purpose": "Result sentences under a project, bold, under a 2px rule. Endpoints 1.125rem and 1.3125rem." },
+      "row-title": { "displayName": "Row title", "purpose": "Publication row titles and years on the home page." },
+      "title": { "displayName": "Title", "purpose": "Entry titles on the CV and publications pages; the current role in the hero." },
+      "group": { "displayName": "Group", "purpose": "Organisation names and publication group headings, over a 2px rule." },
+      "body": { "displayName": "Body", "purpose": "Running text, capped between 34em and 44em, tabular figures." },
+      "secondary": { "displayName": "Secondary", "purpose": "Navigation, links, dates, authors, venues, skills, footer." },
+      "label": { "displayName": "Label", "purpose": "Project meta, tags, band notes, keywords; grey ink." },
+      "caption": { "displayName": "Caption", "purpose": "Figure captions, source lines, the footer note." },
+      "code": { "displayName": "Code", "purpose": "The 3D vision and AI agents codes; figure credits use the same size at regular weight." },
+      "diagram": { "displayName": "Diagram", "purpose": "Text inside SVG diagrams (13, 14 and 22 SVG units); a system grotesk because an SVG loaded as an image cannot use the page's web font." },
+      "print-body": { "displayName": "PDF body", "purpose": "PDF only. System sans at 10pt for parsers." },
+      "print-name": { "displayName": "PDF name", "purpose": "PDF only." },
+      "print-heading": { "displayName": "PDF section heading", "purpose": "PDF only. Uppercase with 0.04em tracking over a hairline." },
+      "print-secondary": { "displayName": "PDF secondary", "purpose": "PDF only. Authors and venues." },
+      "print-small": { "displayName": "PDF small", "purpose": "PDF only. Dates, places, summaries." },
+      "print-note": { "displayName": "PDF note", "purpose": "PDF only. Keywords and the updated line." }
+    },
+    "shadows": [],
+    "motion": [],
+    "breakpoints": [
+      { "name": "columns", "value": "40rem" },
+      { "name": "grid-12", "value": "64rem" }
+    ],
+    "lines": [
+      { "name": "bar", "value": "6px solid ink", "purpose": "Opens every band; closes the top bar; opens the footer." },
+      { "name": "current", "value": "3px solid red", "purpose": "Current-page underline and the focus outline (offset 3px)." },
+      { "name": "group", "value": "2px solid ink", "purpose": "Above result sentences, under organisation and group headings, above skill group names." },
+      { "name": "code", "value": "1.5px solid ink", "purpose": "Outline of the code." },
+      { "name": "hairline", "value": "1px solid soft", "purpose": "Between rows; frame of raster figures." }
+    ],
+    "scheme": { "value": "light only", "note": "color-scheme: light, by decision. No dark scheme." },
+    "print": {
+      "page": "A4, margin 16mm 15mm 16mm",
+      "base": "10pt / 1.42, system sans, always light, one text column",
+      "removed": ["band rules", "red dots", "codes", "band notes"]
+    }
+  },
+  "components": [
+    {
+      "name": "Top Bar",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Name, page links and the PDF button over the 6px rule; the current page is bold with a 3px red underline.",
+      "html": "<div class=\"ds-top\"><a class=\"ds-brand\" href=\"#\">Name</a><ul class=\"ds-nav\"><li><a href=\"#\" aria-current=\"page\">About</a></li><li><a href=\"#\">CV</a></li><li><a href=\"#\">Publications</a></li><li><a href=\"#\">Portfolio</a></li></ul><a class=\"ds-pdf\" href=\"#\">CV (PDF)</a></div>",
+      "css": ".ds-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 1rem; min-height: 4rem; font: .9375rem/1.5 var(--font, 'Archivo Variable', 'Helvetica Neue', Helvetica, Arial, sans-serif); color: var(--ink, #0b0b0c); background: var(--bg, #ffffff); } .ds-top::after { content: \"\"; flex: 0 0 100%; height: 6px; background: var(--ink, #0b0b0c); } .ds-top a { color: inherit; text-decoration: none; } .ds-top a:focus-visible { outline: 3px solid var(--red, #d81e15); outline-offset: 3px; } .ds-brand { font-weight: 700; padding: .75rem 0; } .ds-nav { display: flex; gap: .25rem 1.25rem; margin: 0; padding: 0; list-style: none; font-weight: 500; } .ds-nav a { display: inline-block; padding: .75rem 0 .5rem; border-bottom: 3px solid transparent; } .ds-nav a:hover { color: var(--red, #d81e15); } .ds-nav a[aria-current] { border-bottom-color: var(--red, #d81e15); font-weight: 700; } .ds-pdf { background: var(--ink, #0b0b0c); color: var(--bg, #ffffff) !important; padding: .55rem 1rem; font-weight: 700; } .ds-pdf:hover { background: var(--red, #d81e15); }"
+    },
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button",
+      "description": "Square ink button for the PDF download; the ground turns red on hover.",
+      "html": "<a class=\"ds-button\" href=\"#\">Download PDF</a>",
+      "css": ".ds-button { display: inline-block; background: var(--ink, #0b0b0c); color: var(--bg, #ffffff); font: 700 1.0625rem/1.5 var(--font, 'Archivo Variable', 'Helvetica Neue', Helvetica, Arial, sans-serif); padding: .7rem 1.2rem; text-decoration: none; } .ds-button:hover { background: var(--red, #d81e15); color: var(--bg, #ffffff); } .ds-button:focus-visible { outline: 3px solid var(--red, #d81e15); outline-offset: 3px; }"
+    },
+    {
+      "name": "Codes",
+      "kind": "chip",
+      "refersTo": "code",
+      "description": "Square static labels before a project's meta line: 3D vision outlined in ink, AI agents solid red.",
+      "html": "<span class=\"ds-codes\"><span class=\"ds-code\">3D vision</span><span class=\"ds-code ds-code-a\">AI agents</span></span>",
+      "css": ".ds-codes { display: inline-flex; gap: .375rem; font-family: var(--font, 'Archivo Variable', 'Helvetica Neue', Helvetica, Arial, sans-serif); } .ds-code { font-size: .75rem; font-weight: 700; line-height: 1.5; padding: 0 .5rem; border: 1.5px solid var(--ink, #0b0b0c); color: var(--ink, #0b0b0c); background: var(--bg, #ffffff); white-space: nowrap; } .ds-code-a { background: var(--red, #d81e15); border-color: var(--red, #d81e15); color: var(--bg, #ffffff); }"
+    },
+    {
+      "name": "Band",
+      "kind": "custom",
+      "refersTo": "band-label",
+      "description": "A 6px ink rule, a label column naming the band (columns 1 to 3) and the content on columns 4 to 12.",
+      "html": "<section class=\"ds-band\"><div class=\"ds-band-head\"><h2>Selected work</h2><p>Optional one-line note</p></div><div class=\"ds-band-body\">Content starts on column four.</div></section>",
+      "css": ".ds-band { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 1.5rem; border-top: 6px solid var(--ink, #0b0b0c); padding: 1.375rem 0 2rem; font: 1.0625rem/1.5 var(--font, 'Archivo Variable', 'Helvetica Neue', Helvetica, Arial, sans-serif); color: var(--ink, #0b0b0c); background: var(--bg, #ffffff); } .ds-band-head { grid-column: 1 / 4; } .ds-band-head h2 { margin: 0; font-size: 1.375rem; line-height: 1.12; letter-spacing: -.01em; } .ds-band-head p { margin: .375rem 0 0; max-width: 15em; font-size: .875rem; line-height: 1.4; color: var(--muted, #5c6066); } .ds-band-body { grid-column: 4 / 13; }"
+    },
+    {
+      "name": "Project Row",
+      "kind": "custom",
+      "refersTo": "result-line",
+      "description": "The signature: a headline title, codes and meta, a summary, then result sentences as bold lines under a 2px rule.",
+      "html": "<article class=\"ds-job\"><h3 class=\"ds-job-title\"><a href=\"#\">Project title set as a headline</a></h3><p class=\"ds-job-meta\"><span class=\"ds-job-code\">3D vision</span><span>Organisation, team</span></p><p class=\"ds-job-sum\">One or two sentences saying what was built.</p><ul class=\"ds-res\"><li>First result, stated as a sentence.</li><li>Second result, with its number.</li></ul><ul class=\"ds-tags\"><li>Tag</li><li>Tag</li><li>Tag</li></ul></article>",
+      "css": ".ds-job { max-width: 34rem; font: 1.0625rem/1.5 var(--font, 'Archivo Variable', 'Helvetica Neue', Helvetica, Arial, sans-serif); color: var(--ink, #0b0b0c); background: var(--bg, #ffffff); } .ds-job-title { margin: 0; font-size: clamp(1.6875rem, 1.3rem + 1.6vw, 2.25rem); line-height: 1.04; letter-spacing: -.03em; } .ds-job-title a { color: inherit; text-decoration: none; } .ds-job-title a:hover { color: var(--red, #d81e15); text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: .18em; } .ds-job-title a:focus-visible { outline: 3px solid var(--red, #d81e15); outline-offset: 3px; } .ds-job-meta { display: flex; flex-wrap: wrap; align-items: center; gap: .375rem .625rem; margin: .7rem 0 1rem; font-size: .875rem; color: var(--muted, #5c6066); } .ds-job-code { font-size: .75rem; font-weight: 700; line-height: 1.5; padding: 0 .5rem; border: 1.5px solid var(--ink, #0b0b0c); color: var(--ink, #0b0b0c); } .ds-job-sum { margin: 0; } .ds-res { margin: 1.125rem 0 0; padding: 0; list-style: none; border-top: 2px solid var(--ink, #0b0b0c); } .ds-res li { padding: .7rem 0; border-bottom: 1px solid var(--soft, #e3e4e6); font-size: clamp(1.125rem, 1.02rem + .45vw, 1.3125rem); line-height: 1.3; font-weight: 700; letter-spacing: -.012em; } .ds-tags { display: flex; flex-wrap: wrap; margin: 1rem 0 0; padding: 0; list-style: none; font-size: .875rem; color: var(--muted, #5c6066); } .ds-tags li + li::before { content: \"\\00b7\"; margin: 0 .5rem; }"
+    },
+    {
+      "name": "Publication Row",
+      "kind": "custom",
+      "refersTo": "band-label",
+      "description": "Home page type row: year column, bold title, grey venue line; rows separated by hairlines.",
+      "html": "<ol class=\"ds-pubs\"><li class=\"ds-pub\"><span class=\"ds-pub-year\">2024</span><h3><a href=\"#\">Title of the paper</a></h3><p><b>Journal name</b>, vol. 26, 2024</p></li><li class=\"ds-pub\"><span class=\"ds-pub-year\">2022</span><h3><a href=\"#\">Title of another paper</a></h3><p><b>Journal name</b>, 2022</p></li></ol>",
+      "css": ".ds-pubs { margin: 0; padding: 0; list-style: none; font: 1.0625rem/1.5 var(--font, 'Archivo Variable', 'Helvetica Neue', Helvetica, Arial, sans-serif); font-variant-numeric: tabular-nums; color: var(--ink, #0b0b0c); background: var(--bg, #ffffff); } .ds-pub { display: grid; grid-template-columns: 5rem minmax(0, 1fr); column-gap: 1.5rem; } .ds-pub + .ds-pub { margin-top: 1.125rem; padding-top: 1.125rem; border-top: 1px solid var(--soft, #e3e4e6); } .ds-pub-year { font-size: 1.3125rem; font-weight: 700; line-height: 1.3; } .ds-pub h3 { grid-column: 2; margin: 0 0 .375rem; font-size: 1.3125rem; line-height: 1.3; letter-spacing: -.012em; } .ds-pub h3 a { color: inherit; text-decoration: none; } .ds-pub h3 a:hover { color: var(--red, #d81e15); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: .18em; } .ds-pub h3 a:focus-visible { outline: 3px solid var(--red, #d81e15); outline-offset: 3px; } .ds-pub p { grid-column: 2; margin: 0; font-size: .9375rem; color: var(--muted, #5c6066); } .ds-pub p b { color: var(--ink, #0b0b0c); }"
+    },
+    {
+      "name": "Dated Entries",
+      "kind": "custom",
+      "refersTo": "now-dot",
+      "description": "CV entries under an organisation heading on a 2px rule: date column, bold title, detail. The current role carries the red dot.",
+      "html": "<div class=\"ds-org\"><h3 class=\"ds-org-name\">Organisation <span>City, Country</span></h3><ol class=\"ds-line\"><li class=\"ds-e ds-e-now\"><h4 class=\"ds-e-title\">Current role</h4><p class=\"ds-e-when\">2025 – Present</p><div class=\"ds-e-rest\">What the role covers.</div></li><li class=\"ds-e\"><h4 class=\"ds-e-title\"><a href=\"#\">Earlier role</a></h4><p class=\"ds-e-when\">2023 – 2025</p><div class=\"ds-e-rest\">What the role covered.</div></li></ol></div>",
+      "css": ".ds-org { font: 1.0625rem/1.5 var(--font, 'Archivo Variable', 'Helvetica Neue', Helvetica, Arial, sans-serif); font-variant-numeric: tabular-nums; color: var(--ink, #0b0b0c); background: var(--bg, #ffffff); } .ds-org-name { margin: 0 0 .875rem; padding-bottom: .5rem; border-bottom: 2px solid var(--ink, #0b0b0c); font-size: 1.125rem; line-height: 1.12; } .ds-org-name span { margin-left: .375rem; font-weight: 400; font-size: .9375rem; color: var(--muted, #5c6066); } .ds-line { margin: 0; padding: 0; list-style: none; } .ds-e { display: grid; grid-template-columns: 11rem minmax(0, 1fr); column-gap: 1.5rem; } .ds-e + .ds-e { margin-top: 1.125rem; padding-top: 1.125rem; border-top: 1px solid var(--soft, #e3e4e6); } .ds-e-title { grid-column: 2; margin: 0; font-size: 1.1875rem; line-height: 1.3; letter-spacing: -.01em; } .ds-e-title a { color: inherit; text-decoration: underline; text-decoration-color: var(--soft, #e3e4e6); text-decoration-thickness: 2px; text-underline-offset: .18em; } .ds-e-title a:hover { color: var(--red, #d81e15); text-decoration-color: currentColor; } .ds-e-title a:focus-visible { outline: 3px solid var(--red, #d81e15); outline-offset: 3px; } .ds-e-when { grid-column: 1; grid-row: 1; margin: .2rem 0 0; font-size: .9375rem; color: var(--muted, #5c6066); } .ds-e-now .ds-e-when::before { content: \"\"; display: inline-block; width: .6rem; height: .6rem; margin-right: .4rem; border-radius: 50%; background: var(--red, #d81e15); } .ds-e-rest { grid-column: 2; grid-row: 2; margin-top: .375rem; }"
+    },
+    {
+      "name": "Skill Groups",
+      "kind": "custom",
+      "refersTo": "band-label",
+      "description": "Three columns, each a bold group name on a 2px ink rule with a plain list below.",
+      "html": "<dl class=\"ds-skills\"><div><dt>Group one</dt><dd>Item, item, item</dd></div><div><dt>Group two</dt><dd>Item, item, item</dd></div><div><dt>Group three</dt><dd>Item, item</dd></div></dl>",
+      "css": ".ds-skills { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; margin: 0; font: .9375rem/1.5 var(--font, 'Archivo Variable', 'Helvetica Neue', Helvetica, Arial, sans-serif); color: var(--ink, #0b0b0c); background: var(--bg, #ffffff); } .ds-skills dt { font-weight: 700; border-top: 2px solid var(--ink, #0b0b0c); padding-top: .5rem; margin-bottom: .375rem; } .ds-skills dd { margin: 0; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Work Is the Poster",
+    "overview": "The site is a Swiss International Style poster built on a strict grid. The name is set at poster size, the results of each project are set as large bold sentences, and what matters most is biggest and first. Importance, not chronology, sets size and position: selected work leads with a figure and its results, publications follow as type rows, and the dated record is the smallest thing on the home page.\n\nThe material is ink on poster white. One grotesk (Archivo) carries every level of the hierarchy, from the name to a caption; contrast comes from size and weight alone. A heavy black rule opens every band, a label column names it, and hairlines separate rows. Red is the only colour and it is a signal, not a decoration. There is one scheme (light), no JavaScript, no motion, no shadows and no rounded corners. Diagrams for projects are drawn in the same black, white and red so a figure reads as part of the page.\n\nThe PDF CV is a different object on purpose: the same markup stripped to a plain single text column in a system face, with rules, dots and codes removed, so parsers and printers get uninterrupted text.",
+    "keyCharacteristics": [
+      "Size follows importance. The name, then project titles, then result sentences, then everything else.",
+      "One typeface, two weights doing most of the work (700 and 400), 500 for the lede.",
+      "One red, reserved for \"current\", the AI agents code, the arrival mark, hover and focus.",
+      "A 6px black rule opens every band; a label column on the left names it from 64rem.",
+      "Hairlines, not boxes: rows are separated by 1px lines, never enclosed.",
+      "Square everything; the only curve is the red dot.",
+      "Tabular figures everywhere.",
+      "Static: no JavaScript, no transitions, no animation."
+    ],
+    "rules": [
+      { "name": "The One Red Rule", "body": "Red means current, arrived, or under the pointer or focus, plus the single \"AI agents\" code. It is never a heading colour, a background wash, a divider or a way to add emphasis to text. If a new element wants red, it must be one of those states.", "section": "colors" },
+      { "name": "The No Second Colour Rule", "body": "There is no second accent and no tint scale. Distinctions are made with size, weight, rule thickness and position.", "section": "colors" },
+      { "name": "The One Scheme Rule", "body": "The site is light only, by decision (`color-scheme: light`). Do not add a dark scheme.", "section": "colors" },
+      { "name": "The One Face Rule", "body": "Every level is Archivo. Do not introduce a second family for headings, labels or numbers.", "section": "typography" },
+      { "name": "The Importance Sets Size Rule", "body": "Size and position follow what matters, not when it happened. A date is never larger than the thing it dates, and the most important item in a band comes first regardless of its year.", "section": "typography" },
+      { "name": "The Tabular Rule", "body": "Figures are tabular everywhere so dates and years align down a column.", "section": "typography" },
+      { "name": "The Sentence Case Rule", "body": "Headings and labels are sentence case with normal or negative tracking. Uppercase tracked headings exist only in the PDF.", "section": "typography" },
+      { "name": "The Rule Opens the Band Rule", "body": "A band always begins with the 6px ink rule. The rule is never used inside a band, and a band never begins without it.", "section": "layout" },
+      { "name": "The Column Four Rule", "body": "From 64rem, content starts on column 4. Only the name, the page title and the band labels may sit in columns 1 to 3.", "section": "layout" },
+      { "name": "The Flat Sheet Rule", "body": "If an element seems to need a shadow or a tinted panel to be noticed, it needs a rule above it, a larger size or an earlier position instead.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do let importance set size and position: the strongest work first and largest, dates small and grey.",
+      "Do open every band with the 6px ink rule and name it in the label column (columns 1 to 3 from 64rem), with content on columns 4 to 12.",
+      "Do set results as bold sentences at result size under a 2px ink rule, one hairline after each.",
+      "Do keep red for the current page, the current role, the \"AI agents\" code, the arrival bar, hover and focus.",
+      "Do draw new diagrams in ink, white and red only, with red on the one outcome that matters.",
+      "Do use the four line weights for their own jobs: 6px band, 3px current and focus, 2px group, 1px row.",
+      "Do keep every figure tabular and every heading in sentence case.",
+      "Do keep each page complete and ordered as plain HTML; dots and rules are generated content and must not carry information the text lacks.",
+      "Do keep the PDF plain: one column, system face, no rules, dots or codes."
+    ],
+    "donts": [
+      "Don't order or size content by chronology when importance says otherwise.",
+      "Don't use red for headings, emphasis, backgrounds or dividers, and don't add a second colour or a tint.",
+      "Don't add a second typeface, uppercase labels or wide tracking on screen.",
+      "Don't add shadows, gradients, blur, cards or tinted panels.",
+      "Don't round corners; the red dot is the only curve.",
+      "Don't add JavaScript, transitions or animation.",
+      "Don't add a dark scheme.",
+      "Don't put content in columns 1 to 3 from 64rem unless it is the name, a page title or a band label.",
+      "Don't frame SVG diagrams or recolour publication figures that come from papers."
+    ]
+  }
+}
