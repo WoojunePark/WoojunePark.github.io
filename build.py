@@ -119,7 +119,7 @@ def figure_html(fig: dict | None, up: str, cls: str) -> str:
     extra = []
     if fig.get("credit"):
         extra.append(f'<span class="credit">{escape(fig["credit"])}</span>')
-    if fig.get("source"):
+    if str(fig.get("source") or "").startswith("http"):       # an original diagram has no outside source to link
         extra.append(f'<span class="credit">Source: {source_link(fig["source"])}</span>')
     alt = fig.get("alt") or fig.get("caption") or "figure"
     size = image_size(fig["file"])
@@ -139,41 +139,184 @@ def keywords_html(pub: dict) -> str:
             + "; ".join(f'<span class="kw">{escape(k)}</span>' for k in kws) + "</p>")
 
 
-def pub_html(pub: dict, me: set[str], rich: bool = False, up: str = "") -> str:
+# ------------------------------------------------------------------ lines and time
+# Presentation only: which coloured line an entry is drawn on is read from words already in the data.
+
+AGENT_WORDS = ("mcp", "langgraph", "llm agent", "agentic")
+LINE_NAMES = {"v": "3D vision", "a": "AI agents"}
+
+
+def on_agent_line(texts: list[str]) -> bool:
+    return any(w in (t or "").lower() for t in texts for w in AGENT_WORDS)
+
+
+def year_f(v: str | None, today: float) -> float:
+    """A date string as a fractional year. A bare year sits mid-year (the month is unknown)."""
+    v = str(v or "")
+    if not v or v.lower() == "present":
+        return today
+    parts = v.split("-")
+    if len(parts) >= 2 and parts[1].isdigit():
+        return int(parts[0]) + (int(parts[1]) - 1) / 12
+    return int(parts[0]) + 0.5
+
+
+def today_f(data: dict) -> float:
+    d = date.fromisoformat(data["updated"])
+    return d.year + (d.month - 1) / 12 + d.day / 365
+
+
+def line_start(data: dict) -> float:
+    """The research line begins with the first publication."""
+    t = today_f(data)
+    return min((year_f(p.get("date"), t) for p in data.get("publications") or [] if p.get("date")), default=t)
+
+
+def pre(data: dict, when: str | None) -> str:
+    return " pre" if year_f(when, today_f(data)) < line_start(data) else ""
+
+
+def slug(text: str) -> str:
+    out = "".join(c.lower() if c.isascii() and c.isalnum() else "-" for c in text)
+    return "-".join(x for x in out.split("-") if x)[:60]
+
+
+def short(text: str, limit: int = 34) -> str:
+    text = text.split(" (")[0]
+    return text if len(text) <= limit else text.split(",")[0]
+
+
+def my_authorship(pub: dict, me: set[str]) -> str:
+    authors = pub.get("authors") or []
+    for i, a in enumerate(authors):
+        if a["name"] in me:
+            first_block = all(x.get("equal") for x in authors[:i + 1])
+            if a.get("equal") and first_block:
+                return "joint first author"
+            return "first author" if i == 0 else ""
+    return ""
+
+
+def venue_short(pub: dict) -> str:
+    v = pub.get("venue", "")
+    if v.endswith(")") and " (" in v:
+        return v.rsplit(" (", 1)[1][:-1]
+    return v
+
+
+# ------------------------------------------------------------------ entries
+
+def entry(title: str, when: str = "", rest: str = "", mark: str = "ring", cls: str = "", id_: str = "",
+          tag: str = "h3") -> str:
+    ident = f' id="{escape(id_)}"' if id_ else ""
+    return (f'<li class="e {mark}{cls}"{ident}><{tag} class="e-title">{title}</{tag}>'
+            + (f'<p class="e-when">{when}</p>' if when else "")
+            + (f'<div class="e-rest">{rest}</div>' if rest else "") + "</li>")
+
+
+def pub_entry(data: dict, pub: dict, me: set[str], rich: bool = False, up: str = "", brief: bool = False,
+              tag: str = "h4") -> str:
     title = escape(pub["title"])
     if pub.get("doi"):
         title = f'<a href="https://doi.org/{escape(pub["doi"])}">{title}</a>'
-    en = f'<span class="title-en">({escape(pub["title_en"])})</span>' if pub.get("title_en") else ""
-    venue = escape(pub.get("venue", ""))
+    elif brief and pub.get("id"):
+        title = f'<a href="{up}publications/#{escape(pub["id"])}">{title}</a>'
+    if pub.get("title_en"):
+        title += f' <span class="title-en">({escape(pub["title_en"])})</span>'
     details = f", {escape(pub['details'])}" if pub.get("details") else ""
-    text = (f'<div class="pub-title">{title} {en}</div>'
-            f'<div class="pub-authors">{authors_html(pub, me)}</div>'
-            f'<div class="pub-venue"><em>{venue}</em>{details}</div>')
-    summary = f'<p class="pub-summary">{escape(pub["summary"])}</p>' if pub.get("summary") else ""
-    text += summary + keywords_html(pub)
-    if not rich:
-        return f'<li class="pub">{text}</li>'
-    if pub.get("abstract"):
-        text += (f'<details class="abstract"><summary>Abstract</summary><p>{escape(pub["abstract"])}</p>'
-                 f'<p class="src">Source: {source_link(pub.get("abstract_source"))}</p></details>')
-    figs = "".join(figure_html(f, up, "pub-fig") for f in pub_figures(pub))
-    figs = f'<div class="pub-figs">{figs}</div>' if figs else ""
-    return f'<li class="pub rich"{pub_anchor(pub)}><div class="pub-text">{text}</div>{figs}</li>'
+    rest = (f'<p class="pub-authors">{authors_html(pub, me)}</p>'
+            f'<p class="pub-venue"><em>{escape(pub.get("venue", ""))}</em>{details}</p>')
+    if not brief:
+        if pub.get("summary"):
+            rest += f'<p class="pub-summary">{escape(pub["summary"])}</p>'
+        rest += keywords_html(pub)
+    if rich:
+        if pub.get("abstract"):
+            rest += (f'<details class="abstract"><summary>Abstract</summary><p>{escape(pub["abstract"])}</p>'
+                     f'<p class="src">Source: {source_link(pub.get("abstract_source"))}</p></details>')
+        figs = "".join(figure_html(f, up, "pub-fig") for f in pub_figures(pub))
+        rest += f'<div class="pub-figs">{figs}</div>' if figs else ""
+    year = str(pub.get("date") or "")[:4]
+    mark = "square" if pub.get("kind") == "patent" else "dot"
+    ident = pub.get("id", "") if rich else ""
+    return entry(title, year, rest, mark, " pub" + pre(data, pub.get("date")), ident, tag)
 
 
-def pub_anchor(pub: dict) -> str:
-    return f' id="{escape(pub["id"])}"' if pub.get("id") else ""
+def publications_html(data: dict, heading_tag: str = "h3", rich: bool = False, up: str = "",
+                      brief: bool = False) -> str:
+    me = set(data["profile"].get("me") or [data["profile"]["name"]])
+    pubs = data.get("publications") or []
+    sub = "h3" if heading_tag == "h2" else "h4"
+    parts = []
+    for kind, label in PUB_GROUPS:
+        items = [p for p in pubs if p.get("kind") == kind]
+        if items:
+            rows = '<ol class="line">' + "".join(pub_entry(data, p, me, rich, up, brief, sub) for p in items) + "</ol>"
+            parts.append(band(kind, label, rows) if rich else f'<{heading_tag} class="pub-group">{label}</{heading_tag}>{rows}')
+    if any(a.get("equal") for p in pubs for a in p.get("authors") or []):
+        note = data.get("site", {}).get("equal_contribution_note") or "# these authors contributed equally to this work"
+        parts.append(f'<p class="eq-note">{escape(note)}</p>')
+    return "".join(parts)
 
 
-def scholarly_jsonld(data: dict) -> str:
+def experience_html(data: dict) -> str:
+    out = []
+    for i, e in enumerate(data.get("experience") or []):
+        roles = []
+        for j, r in enumerate(e.get("roles") or []):
+            bullets = "".join(f"<li>{escape(b['text'])}</li>" for b in r.get("bullets") or [])
+            now = " now" if str(r.get("to", "")).lower() == "present" else ""
+            roles.append(entry(escape(r["title"]), fmt_range(r.get("from"), r.get("to")),
+                               f"<ul>{bullets}</ul>" if bullets else "", "ring",
+                               now + pre(data, r.get("from")), f"exp-{i}-{j}", "h4"))
+        place = f' <span class="org-place">{escape(e["place"])}</span>' if e.get("place") else ""
+        out.append(f'<div class="org"><h3 class="org-name">{escape(e["org"])}{place}</h3>'
+                   f'<ol class="line">{"".join(roles)}</ol></div>')
+    return "".join(out)
+
+
+def skills_html(data: dict) -> str:
+    rows = "".join(f'<div class="skill"><dt>{escape(g["group"])}</dt><dd>{escape(", ".join(g.get("items") or []))}</dd></div>'
+                   for g in data.get("skills") or [])
+    return f'<dl class="skills">{rows}</dl>' if rows else ""
+
+
+def cv_body(data: dict) -> str:
+    edu = "".join(entry(escape(e["school"]), fmt_range(e.get("from"), e.get("to")),
+                        f'<p class="e-sub">{escape(e["degree"])}</p>', "ring", pre(data, e.get("from")), f"edu-{i}")
+                  for i, e in enumerate(data.get("education") or []))
+    hon = "".join(entry(escape(h["title"]), fmt_range(h.get("from"), h.get("to")), "", "tick", pre(data, h.get("from")))
+                  for h in data.get("honors") or [])
+    act = "".join(entry(escape(a["title"]), fmt_range(a.get("from"), a.get("to")),
+                        f'<p class="e-sub">{escape(a["text"])}</p>' if a.get("text") else "", "tick",
+                        pre(data, a.get("from")))
+                  for a in data.get("activities") or [])
+    lang = "".join(f"<p>{escape(x['text'])}</p>" for x in data.get("languages") or [])
+
+    sec = band
+
+    return (sec("experience", "Experience", experience_html(data))
+            + sec("education", "Education", f'<ol class="line">{edu}</ol>')
+            + (sec("skills", "Skills", skills_html(data)) if data.get("skills") else "")
+            + sec("publications", "Publications and Patents", publications_html(data))
+            + (sec("honors", "Honors and Scholarships", f'<ol class="line">{hon}</ol>') if hon else "")
+            + (sec("activities", "Activities", f'<ol class="line">{act}</ol>') if act else "")
+            + (sec("languages", "Languages", lang) if lang else ""))
+
+
+# ------------------------------------------------------------------ structured data
+
+def scholarly_items(data: dict) -> list[dict]:
     """schema.org ScholarlyArticle (papers) / CreativeWork (patents) per publication, for crawlers and LLM readers."""
     base = (data.get("site", {}).get("url") or "").rstrip("/")
+    me = set(data["profile"].get("me") or [data["profile"]["name"]])
     graph = []
     for pub in data.get("publications") or []:
         kind = pub.get("kind")
         item = {"@type": "CreativeWork" if kind == "patent" else "ScholarlyArticle",
                 "name": pub.get("title"), "headline": pub.get("title"),
-                "author": [{"@type": "Person", "name": a["name"]} for a in pub.get("authors") or []]}
+                "author": [{"@type": "Person", "name": a["name"], **({"@id": f"{base}/#person"} if a["name"] in me else {})}
+                           for a in pub.get("authors") or []]}
         if pub.get("id"):
             item["@id"] = f"{base}/publications/#{pub['id']}"
             item["url"] = item["@id"]
@@ -203,121 +346,128 @@ def scholarly_jsonld(data: dict) -> str:
         if imgs:
             item["image"] = [{k: v for k, v in i.items() if v} for i in imgs]
         graph.append({k: v for k, v in item.items() if v})
-    if not graph:
-        return ""
+    return graph
+
+
+def person_item(data: dict) -> dict:
+    """schema.org Person built only from fields of data/cv.json."""
+    p, base = data["profile"], (data.get("site", {}).get("url") or "").rstrip("/")
+    links = [l["url"] for l in p.get("links") or []]
+    current = next(((e, r) for e in data.get("experience") or [] for r in e.get("roles") or []
+                    if str(r.get("to", "")).lower() == "present"), None)
+    topics, seen = [], set()
+    for t in ([t for g in data.get("skills") or [] for t in g.get("items") or []]
+              + [t for prj in data.get("projects") or [] for t in prj.get("tags") or []]
+              + [k for pub in data.get("publications") or [] for k in pub.get("keywords") or []]):
+        if t.lower() not in seen:
+            seen.add(t.lower())
+            topics.append(t)
+    schools = list(dict.fromkeys(e["school"] for e in data.get("education") or []))
+    item = {"@type": "Person", "@id": f"{base}/#person", "name": p["name"],
+            "alternateName": [n for n in [p.get("name_native"), *(p.get("me") or [])] if n and n != p["name"]],
+            "url": f"{base}/", "image": f"{base}/{p['photo']}" if p.get("photo") else None,
+            "description": " ".join(a["text"] for a in data.get("about") or []),
+            "jobTitle": current[1]["title"] if current else None,
+            "worksFor": {"@type": "Organization", "name": current[0]["org"]} if current else None,
+            "address": {"@type": "PostalAddress", "addressLocality": p["location"]} if p.get("location") else None,
+            "email": next((u for u in links if u.startswith("mailto:")), None),
+            "sameAs": [u for u in links if u.startswith("http")],
+            "alumniOf": [{"@type": "CollegeOrUniversity", "name": s} for s in schools],
+            "knowsAbout": topics}
+    item["alternateName"] = list(dict.fromkeys(item["alternateName"]))
+    return {k: v for k, v in item.items() if v}
+
+
+def jsonld(data: dict, kind: str) -> str:
+    base = (data.get("site", {}).get("url") or "").rstrip("/")
+    graph = [person_item(data)]
+    if kind == "about":
+        graph.insert(0, {"@type": "ProfilePage", "@id": f"{base}/", "url": f"{base}/", "name": data["profile"]["name"],
+                         "dateModified": data["updated"], "inLanguage": "en", "mainEntity": {"@id": f"{base}/#person"}})
+    if kind in ("cv", "publications"):
+        graph += scholarly_items(data)
     doc = {"@context": "https://schema.org", "@graph": graph}
     return ('<script type="application/ld+json">'
             + json.dumps(doc, ensure_ascii=False, indent=1).replace("</", "<\\/") + "</script>")
 
 
-def publications_html(data: dict, heading_tag: str = "h2", rich: bool = False, up: str = "") -> str:
-    me = set(data["profile"].get("me") or [data["profile"]["name"]])
-    pubs = data.get("publications") or []
-    parts = []
-    for kind, label in PUB_GROUPS:
-        items = [p for p in pubs if p.get("kind") == kind]
-        if items:
-            parts.append(f'<{heading_tag} class="pub-group">{label}</{heading_tag}>'
-                         f'<ul class="pubs">{"".join(pub_html(p, me, rich, up) for p in items)}</ul>')
-    if any(a.get("equal") for p in pubs for a in p.get("authors") or []):
-        note = data.get("site", {}).get("equal_contribution_note") or "# these authors contributed equally to this work"
-        parts.append(f'<p class="eq-note">{escape(note)}</p>')
-    return "".join(parts)
-
-
-def row(left: str, right: str, sub: str = "", body: str = "") -> str:
-    return (f'<div class="row"><div class="row-head"><span class="row-title">{left}</span>'
-            f'<span class="row-date">{right}</span></div>'
-            + (f'<div class="row-sub">{sub}</div>' if sub else "") + body + "</div>")
-
-
-def experience_html(data: dict) -> str:
-    out = []
-    for e in data.get("experience") or []:
-        roles = []
-        for r in e.get("roles") or []:
-            bullets = "".join(f"<li>{escape(b['text'])}</li>" for b in r.get("bullets") or [])
-            roles.append(row(escape(r["title"]), fmt_range(r.get("from"), r.get("to")),
-                             body=f"<ul>{bullets}</ul>" if bullets else ""))
-        out.append(f'<div class="org"><div class="org-name">{escape(e["org"])}'
-                   f'<span class="org-place">{escape(e.get("place", ""))}</span></div>{"".join(roles)}</div>')
-    return "".join(out)
-
-
-def cv_body(data: dict, pub_heading: str = "h3") -> str:
-    edu = "".join(row(escape(e["school"]), fmt_range(e.get("from"), e.get("to")), escape(e["degree"]))
-                  for e in data.get("education") or [])
-    hon = "".join(row(escape(h["title"]), fmt_range(h.get("from"), h.get("to"))) for h in data.get("honors") or [])
-    act = "".join(row(escape(a["title"]), fmt_range(a.get("from"), a.get("to")),
-                      body=f'<p class="row-text">{escape(a["text"])}</p>' if a.get("text") else "")
-                  for a in data.get("activities") or [])
-    lang = "".join(f"<p>{escape(x['text'])}</p>" for x in data.get("languages") or [])
-    return (f'<section><h2>Experience</h2>{experience_html(data)}</section>'
-            f'<section><h2>Education</h2>{edu}</section>'
-            f'<section><h2>Publications and Patents</h2>{publications_html(data, pub_heading)}</section>'
-            + (f'<section><h2>Honors and Scholarships</h2>{hon}</section>' if hon else "")
-            + (f'<section><h2>Activities</h2>{act}</section>' if act else "")
-            + (f'<section><h2>Languages</h2>{lang}</section>' if lang else ""))
-
-
 # ------------------------------------------------------------------ pages
 
-def links_html(data: dict) -> str:
+NAV = [("About", "", "about"), ("CV", "cv/", "cv"), ("Publications", "publications/", "publications"),
+       ("Portfolio", "portfolio/", "portfolio")]
+FONT = "assets/fonts/archivo-latin-wght-normal.woff2"
+
+
+def links_html(data: dict, up: str, cls: str = "links") -> str:
     items = [f'<li><a href="{escape(l["url"])}" rel="me">{escape(l["label"])}</a></li>'
              for l in data["profile"].get("links") or []]
-    return f'<ul class="links">{"".join(items)}</ul>'
+    items.append(f'<li><a href="{up}files/cv.pdf">CV (PDF)</a></li>')
+    return f'<ul class="{cls}">{"".join(items)}</ul>'
 
 
-def page(data: dict, title: str, active: str, body: str, depth: int, head_extra: str = "") -> str:
-    p = data["profile"]
-    up = "../" * depth
-    nav = [("About", f"{up}index.html", "about"), ("CV", f"{up}cv/", "cv"),
-           ("Publications", f"{up}publications/", "publications")]
-    if data.get("projects"):
-        nav.append(("Portfolio", f"{up}portfolio/", "portfolio"))
-    nav_html = "".join(f'<a href="{h}"{" aria-current=page" if k == active else ""}>{n}</a>' for n, h, k in nav)
-    if p.get("photo"):
-        avatar = f'<img class="avatar" src="{up}{escape(p["photo"])}" alt="{escape(p["name"])}" width="112" height="112">'
-    else:
-        initials = "".join(w[0] for w in p["name"].split()[:2])
-        avatar = f'<div class="avatar" aria-hidden="true">{escape(initials)}</div>'
-    native = f'<p class="native">{escape(p["name_native"])}</p>' if p.get("name_native") else ""
-    desc = escape(f'{p["name"]} — {p.get("headline", "")}')
+def band(name: str, title: str, body: str, note: str = "") -> str:
+    """One section of the grid: a label column (heading and an optional note) beside the content."""
+    note = f'<p class="band-note">{note}</p>' if note else ""
+    return (f'<section class="band" id="{name}" aria-labelledby="{name}-h"><div class="band-head">'
+            f'<h2 id="{name}-h">{title}</h2>{note}</div><div class="band-body">{body}</div></section>')
+
+
+def page(data: dict, title: str, active: str, body: str, depth: int, description: str = "") -> str:
+    p, site = data["profile"], data.get("site", {})
+    up, base = "../" * depth, (site.get("url") or "").rstrip("/")
+    nav = [n for n in NAV if n[2] != "portfolio" or data.get("projects")]
+    path = next(h for _, h, k in nav if k == active)
+    cur = ' aria-current="page"'
+    nav_html = "".join(f'<li><a href="{(up + h) or "./"}"{cur if k == active else ""}>{n}</a></li>' for n, h, k in nav)
+    desc = escape(description or f'{p["name"]}: {p.get("headline", "")}')
+    image = f'<meta property="og:image" content="{base}/{escape(p["photo"])}">' if p.get("photo") else ""
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{escape(title)}</title>
 <meta name="description" content="{desc}">
-<meta property="og:title" content="{escape(title)}"><meta property="og:description" content="{desc}">
-<link rel="canonical" href="{escape(data.get('site', {}).get('url', ''))}/">
+<meta name="author" content="{escape(p["name"])}">
+<link rel="canonical" href="{base}/{path}">
+<link rel="alternate" type="text/markdown" href="{base}/cv.md" title="CV as plain text">
+<link rel="alternate" type="application/pdf" href="{base}/files/cv.pdf" title="CV as PDF">
+<meta property="og:type" content="profile"><meta property="og:url" content="{base}/{path}">
+<meta property="og:title" content="{escape(title)}"><meta property="og:description" content="{desc}">{image}
+<meta name="twitter:card" content="summary">
+<meta name="color-scheme" content="light">
+<link rel="preload" href="{up}{FONT}" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="{up}assets/style.css">
-{head_extra}
+{jsonld(data, active)}
 </head><body>
-<header class="top"><div class="wrap"><a class="brand" href="{up}index.html">{escape(p["name"])}</a><nav>{nav_html}</nav></div></header>
-<div class="wrap layout">
-<aside class="side">
-{avatar}
-<h1 class="name">{escape(p["name"])}</h1>{native}
-<p class="headline">{escape(p.get("headline", ""))}</p>
-<p class="loc">{escape(p.get("location", ""))}</p>
-{links_html(data)}
-</aside>
-<main>{body}</main>
-</div>
-<footer class="wrap foot">Last updated {long_date(data["updated"])} · generated from a sourced career record</footer>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="wrap"><a class="brand" href="{up or "./"}">{escape(p["name"])}</a>
+<nav aria-label="Pages"><ul>{nav_html}</ul></nav>
+<a class="pdf" href="{up}files/cv.pdf">CV (PDF)</a></div></header>
+<main id="main" class="wrap">{body}</main>
+<footer class="foot"><div class="wrap"><p class="foot-name">{escape(p["name"])}</p>{links_html(data, up, "foot-links")}
+<p class="foot-note">Last updated {long_date(data["updated"])}. Generated from a sourced career record.
+Plain text: <a href="{up}cv.md">cv.md</a></p></div></footer>
 </body></html>
 """
 
 
+def page_head(data: dict, title: str, extra: str = "") -> str:
+    p = data["profile"]
+    native = f' ({escape(p["name_native"])})' if p.get("name_native") else ""
+    return (f'<header class="page-head"><h1>{title}</h1>'
+            f'<p class="page-who">{escape(p["name"])}{native} · {escape(p.get("headline", ""))}</p>{extra}</header>')
+
+
 def print_page(data: dict) -> str:
     p = data["profile"]
+
     def shown(url: str) -> str:
         return url.removeprefix("mailto:").split("//", 1)[-1].removeprefix("www.")
 
     links = " · ".join(f'<a href="{escape(l["url"])}">{escape(shown(l["url"]))}</a>' for l in p.get("links") or [])
     site = data.get("site", {}).get("url", "")
     return f"""<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><title>{escape(p["name"])} — CV</title>
+<html lang="en"><head><meta charset="utf-8"><title>{escape(p["name"])} CV</title>
+<meta name="author" content="{escape(p["name"])}"><meta name="robots" content="noindex">
 <link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/print.css">
 </head><body class="print">
 <header class="cv-head"><h1>{escape(p["name"])}</h1>
@@ -329,17 +479,90 @@ def print_page(data: dict) -> str:
 """
 
 
-def project_html(prj: dict, up: str) -> str:
+def line_codes(on_ai: bool, on_3d: bool = True) -> str:
+    codes = (['<span class="code v">3D vision</span>'] if on_3d else []) + (['<span class="code a">AI agents</span>'] if on_ai else [])
+    return f'<span class="codes">{"".join(codes)}</span>'
+
+
+def project_lines(prj: dict) -> tuple[bool, bool]:
+    tags = prj.get("tags") or []
+    on_ai = on_agent_line(tags + [prj.get("title", "")])
+    return on_ai, (not on_ai) or any(not on_agent_line([t]) for t in tags)
+
+
+def project_html(prj: dict, up: str, home: bool = False) -> str:
+    """One project row: title, line codes, summary and every result sentence beside its figure."""
+    title = escape(prj["title"])
+    if home:
+        title = f'<a href="portfolio/#{slug(prj["title"])}">{title}</a>'
     bullets = "".join(f"<li>{escape(b['text'])}</li>" for b in prj.get("bullets") or [])
-    tags = "".join(f'<li>{escape(t)}</li>' for t in prj.get("tags") or [])
-    when = fmt_range(prj.get("from"), prj.get("to"))
-    meta = " · ".join(x for x in (escape(prj.get("org", "")), when) if x)
-    img = figure_html(prj.get("image"), up, "prj-img")
-    return (f'<article class="project{" has-img" if img else ""}">{img}<div class="prj-text">'
-            f'<h2 class="prj-title">{escape(prj["title"])}</h2><p class="prj-meta">{meta}</p>'
-            f'<p>{escape(prj.get("summary", ""))}</p>'
-            + (f"<ul>{bullets}</ul>" if bullets else "")
-            + (f'<ul class="tags">{tags}</ul>' if tags else "") + "</div></article>")
+    tags = "" if home else "".join(f'<li>{escape(t)}</li>' for t in prj.get("tags") or [])
+    meta = " · ".join(x for x in (escape(prj.get("org", "")), fmt_range(prj.get("from"), prj.get("to"))) if x)
+    img = figure_html(prj.get("image"), up, "job-fig")
+    ident = "" if home else f' id="{slug(prj["title"])}"'
+    return (f'<article class="job{" has-fig" if img else ""}"{ident}><div class="job-text">'
+            f'<{"h3" if home else "h2"} class="job-title">{title}</{"h3" if home else "h2"}>'
+            f'<p class="job-meta">{line_codes(*project_lines(prj))}<span>{meta}</span></p>'
+            f'<p class="job-sum{"" if bullets else " lead"}">{escape(prj.get("summary", ""))}</p>'
+            + (f'<ul class="res">{bullets}</ul>' if bullets else "")
+            + (f'<ul class="tags">{tags}</ul>' if tags else "") + f"</div>{img}</article>")
+
+
+def home_pubs(data: dict) -> str:
+    """Journal articles, international conferences and patents, newest first, as type-only rows."""
+    me = set(data["profile"].get("me") or [data["profile"]["name"]])
+    pubs = [p for p in data.get("publications") or [] if p.get("kind") != "domestic"]
+    rows = []
+    for p in sorted(pubs, key=lambda x: str(x.get("date") or ""), reverse=True):
+        href = f'publications/#{escape(p["id"])}' if p.get("id") else "publications/"
+        note = my_authorship(p, me)
+        venue = f'<b>{escape(p.get("venue", ""))}</b>' + (f', {escape(p["details"])}' if p.get("details") else "")
+        rows.append(f'<li class="pub-row"><span class="pub-year">{str(p.get("date") or "")[:4]}</span> '
+                    f'<h3><a href="{href}">{escape(p["title"])}</a></h3>'
+                    f'<p>{venue}{f" · {note}" if note else ""}</p></li>')
+    counts = [(sum(1 for p in data.get("publications") or [] if p.get("kind") == k), label)
+              for k, label in (("journal", "journal"), ("conference", "international conference"), ("domestic", "domestic"),
+                               ("patent", "patent"))]
+    note = ", ".join(f"{n} {label}{'s' if n > 1 and label != 'domestic' else ''}" for n, label in counts if n)
+    more = '<p class="more"><a href="publications/">All publications, with abstracts and figures</a></p>'
+    return band("publications", "Publications and patents", f'<ol class="pub-rows">{"".join(rows)}</ol>{more}', note) if rows else ""
+
+
+def home_record(data: dict) -> str:
+    """Roles at the current employer and degrees; the full record is on the CV page."""
+    rows = []
+    for e in data.get("experience") or []:
+        roles = e.get("roles") or []
+        if any(str(r.get("to", "")).lower() == "present" for r in roles):
+            rows += [(fmt_range(r.get("from"), r.get("to")), r["title"], e["org"]) for r in roles]
+    rows += [(fmt_range(e.get("from"), e.get("to")), e["degree"], e["school"]) for e in data.get("education") or []
+             if e.get("to") != e.get("from")]
+    items = "".join(f'<li><span class="row-when">{escape(a)}</span> <span class="row-what">{escape(b)}</span> '
+                    f'<span class="row-where">{escape(c)}</span></li>' for a, b, c in rows)
+    more = '<p class="more"><a href="cv/">Full CV</a></p>'
+    return band("record", "Experience and education", f'<ul class="rows">{items}</ul>{more}') if rows else ""
+
+
+def home_html(data: dict) -> str:
+    p = data["profile"]
+    about = data.get("about") or []
+    photo = (f'<img class="photo" src="{escape(p["photo"])}" alt="Portrait of {escape(p["name"])}" width="400" height="400">'
+             if p.get("photo") else "")
+    sub = " · ".join(x for x in (p.get("name_native"), p.get("headline")) if x)
+    cur = next(((e, r) for e in data.get("experience") or [] for r in e.get("roles") or []
+                if str(r.get("to", "")).lower() == "present"), None)
+    now = (f'<p class="now-role">{escape(cur[1]["title"])}</p><p class="now-meta">{escape(cur[0]["org"])} · '
+           f'{fmt_range(cur[1].get("from"), cur[1].get("to"))}<br>{escape(p.get("location", ""))}</p>') if cur else ""
+    lede = f'<p class="lede">{escape(about[0]["text"])}</p>' if about else ""
+    lines = [project_lines(x) for x in data.get("projects") or []]
+    codes = (f'<p class="hero-codes">{line_codes(any(a for a, _ in lines), any(v for _, v in lines))}</p>' if lines else "")
+    hero = (f'<section class="hero"><h1>{escape(p["name"])} <span class="h1-sub">{escape(sub)}</span></h1>{photo}'
+            f'<div class="hero-now">{now}</div><div class="hero-links">{codes}{links_html(data, "")}</div>{lede}</section>')
+    work = "".join(project_html(x, "", home=True) for x in data.get("projects") or [])
+    rest = "".join(f"<p>{escape(a['text'])}</p>" for a in about[1:])
+    return (hero + (band("work", "Selected work", work) if work else "") + home_pubs(data) + home_record(data)
+            + (band("about", "About", f'<div class="prose">{rest}</div>') if rest else "")
+            + (band("skills", "Skills", skills_html(data)) if data.get("skills") else ""))
 
 
 def assets_used(data: dict) -> list[str]:
@@ -349,24 +572,112 @@ def assets_used(data: dict) -> list[str]:
     return [f for f in files if f]
 
 
-def build(data: dict) -> list[tuple[str, str]]:
-    name = data["profile"]["name"]
-    about = "".join(f"<p>{escape(a['text'])}</p>" for a in data.get("about") or [])
-    pdf = cv_filename(data)
-    cv = (f'<h1 class="page-title">CV</h1><p class="download"><a href="../files/{pdf}">Download PDF</a>'
-          f' <span class="muted">({pdf}, updated {long_date(data["updated"])})</span></p>' + cv_body(data))
-    pubs = '<h1 class="page-title">Publications</h1>' + publications_html(data, rich=True, up="../")
-    pages = [
-        ("index.html", page(data, name, "about", f'<h1 class="page-title">About me</h1>{about}', 0)),
-        ("cv/index.html", page(data, f"CV — {name}", "cv", cv, 1, scholarly_jsonld(data))),
-        ("publications/index.html", page(data, f"Publications — {name}", "publications", pubs, 1,
-                                         scholarly_jsonld(data))),
-        ("cv/print.html", print_page(data)),
-    ]
+# ------------------------------------------------------------------ plain text for machine readers
+
+def cv_markdown(data: dict) -> str:
+    p, base = data["profile"], (data.get("site", {}).get("url") or "").rstrip("/")
+    me = set(p.get("me") or [p["name"]])
+    native = f' ({p["name_native"]})' if p.get("name_native") else ""
+    out = [f'# {p["name"]}{native}', "", f'{p.get("headline", "")} · {p.get("location", "")}', ""]
+    out += [f'- {l["label"]}: {l["url"].removeprefix("mailto:")}' for l in p.get("links") or []]
+    out += [f"- Website: {base}/", f"- CV (PDF): {base}/files/cv.pdf", "", "## About", ""]
+    out += [a["text"] + "\n" for a in data.get("about") or []]
+    out += ["## Experience", ""]
+    for e in data.get("experience") or []:
+        out += [f'### {e["org"]}' + (f' ({e["place"]})' if e.get("place") else ""), ""]
+        for r in e.get("roles") or []:
+            out.append(f'**{r["title"]}** · {fmt_range(r.get("from"), r.get("to"))}')
+            out += [f'- {b["text"]}' for b in r.get("bullets") or []] + [""]
+    out += ["## Education", ""]
+    out += [f'- **{e["school"]}** · {e["degree"]} · {fmt_range(e.get("from"), e.get("to"))}' for e in data.get("education") or []]
+    if data.get("skills"):
+        out += ["", "## Skills", ""] + [f'- **{g["group"]}**: {", ".join(g.get("items") or [])}' for g in data["skills"]]
+    out += ["", "## Publications and Patents", ""]
+    for kind, label in PUB_GROUPS:
+        items = [x for x in data.get("publications") or [] if x.get("kind") == kind]
+        if not items:
+            continue
+        out += [f"### {label}", ""]
+        for pub in items:
+            authors = ", ".join((f'**{a["name"]}**' if a["name"] in me else a["name"]) + ("#" if a.get("equal") else "")
+                                for a in pub.get("authors") or [])
+            title = pub["title"] + (f' ({pub["title_en"]})' if pub.get("title_en") else "")
+            venue = pub.get("venue", "") + (f', {pub["details"]}' if pub.get("details") else "")
+            out.append(f"- {title}. {authors}. *{venue}*."
+                       + (f' https://doi.org/{pub["doi"]}' if pub.get("doi") else ""))
+            if pub.get("summary"):
+                out.append(f'  {pub["summary"]}')
+            if pub.get("keywords"):
+                out.append(f'  Keywords: {"; ".join(pub["keywords"])}')
+        out.append("")
+    if any(a.get("equal") for x in data.get("publications") or [] for a in x.get("authors") or []):
+        out += [data.get("site", {}).get("equal_contribution_note") or "# these authors contributed equally to this work", ""]
     if data.get("projects"):
-        body = ('<h1 class="page-title">Portfolio</h1>'
-                + "".join(project_html(p, "../") for p in data["projects"]))
-        pages.append(("portfolio/index.html", page(data, f"Portfolio — {name}", "portfolio", body, 1)))
+        out += ["## Projects", ""]
+        for prj in data["projects"]:
+            meta = " · ".join(x for x in (prj.get("org", ""), fmt_range(prj.get("from"), prj.get("to"))) if x)
+            out += [f'### {prj["title"]}', "", meta, "", prj.get("summary", ""), ""]
+            out += [f'- {b["text"]}' for b in prj.get("bullets") or []]
+            if prj.get("tags"):
+                out += ["", f'Tags: {", ".join(prj["tags"])}']
+            out.append("")
+    for key, label in (("honors", "Honors and Scholarships"), ("activities", "Activities")):
+        if data.get(key):
+            out += [f"## {label}", ""]
+            out += [f'- {x["title"]} · {fmt_range(x.get("from"), x.get("to"))}' + (f'. {x["text"]}' if x.get("text") else "")
+                    for x in data[key]]
+            out.append("")
+    if data.get("languages"):
+        out += ["## Languages", ""] + [x["text"] for x in data["languages"]] + [""]
+    out.append(f'Last updated {long_date(data["updated"])}.')
+    return "\n".join(out) + "\n"
+
+
+def llms_txt(data: dict) -> str:
+    p, base = data["profile"], (data.get("site", {}).get("url") or "").rstrip("/")
+    native = f' ({p["name_native"]})' if p.get("name_native") else ""
+    pages = [f"- [CV as Markdown]({base}/cv.md): the complete CV in plain text",
+             f"- [CV as PDF]({base}/files/cv.pdf)", f"- [CV]({base}/cv/): experience, education, publications",
+             f"- [Publications]({base}/publications/): summaries, keywords, abstracts and figures, with schema.org JSON-LD"]
+    if data.get("projects"):
+        pages.append(f"- [Portfolio]({base}/portfolio/): projects")
+    about = "\n\n".join(a["text"] for a in data.get("about") or [])
+    return (f'# {p["name"]}{native}\n\n> {p.get("headline", "")} · {p.get("location", "")}\n\n{about}\n\n'
+            f'Every statement on this site is generated from a sourced career record. Last updated {data["updated"]}.\n\n'
+            "## Pages\n\n" + "\n".join(pages) + "\n")
+
+
+def build(data: dict) -> list[tuple[str, str]]:
+    p, base = data["profile"], (data.get("site", {}).get("url") or "").rstrip("/")
+    name, pdf = p["name"], cv_filename(data)
+    who = f'{name}, {p.get("headline", "")}'
+    cv = (page_head(data, "CV", f'<p class="download"><a class="button" href="../files/{pdf}">Download PDF</a>'
+                                f'<span class="muted">{pdf}, updated {long_date(data["updated"])}</span></p>')
+          + cv_body(data))
+    pubs = page_head(data, "Publications") + publications_html(data, "h2", rich=True, up="../")
+    about = ""                                   # whole paragraphs only, never a sentence cut in the middle
+    for a in data.get("about") or []:
+        if about and len(about) + len(a["text"]) > 300:
+            break
+        about = (about + " " + a["text"]).strip()
+    pages = [
+        ("index.html", page(data, f'{name}: {p.get("headline", "")}', "about", home_html(data), 0, about)),
+        ("cv/index.html", page(data, f"CV: {name}", "cv", cv, 1, f"Curriculum vitae of {who}: experience, education, publications and patents.")),
+        ("publications/index.html", page(data, f"Publications: {name}", "publications", pubs, 1,
+                                         f"Publications and patents of {who}, with summaries, keywords, abstracts and figures.")),
+        ("cv/print.html", print_page(data)),
+        ("cv.md", cv_markdown(data)),
+        ("llms.txt", llms_txt(data)),
+        ("robots.txt", f"User-agent: *\nAllow: /\n\nSitemap: {base}/sitemap.xml\n"),
+    ]
+    urls = ["", "cv/", "publications/"]
+    if data.get("projects"):
+        body = page_head(data, "Portfolio") + '<div class="jobs">' + "".join(project_html(x, "../") for x in data["projects"]) + "</div>"
+        pages.append(("portfolio/index.html", page(data, f"Portfolio: {name}", "portfolio", body, 1, f"Projects of {who}.")))
+        urls.append("portfolio/")
+    sitemap = "".join(f"<url><loc>{base}/{u}</loc><lastmod>{data['updated']}</lastmod></url>" for u in urls)
+    pages.append(("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n'
+                                 f'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{sitemap}</urlset>\n'))
     return pages
 
 
