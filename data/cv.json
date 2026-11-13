@@ -1,7 +1,7 @@
 {
   "schema_version": "final-offer.site-public/v1",
-  "updated": "2026-11-11",
-  "content_hash": "sha256:7969303c7860fbd1c4deeb3303be771f2e4b9b018465fbc0bb4242510d2b6e85",
+  "updated": "2026-11-13",
+  "content_hash": "sha256:4eeb084d90bf1cd878b8a197717f1e1213427e173cb6d8205e851e5d22dbfb49",
   "site": {
     "url": "https://woojunepark.github.io",
     "cv_file_prefix": "CV_Woojune_Park",
@@ -35,10 +35,10 @@
   },
   "about": [
     {
-      "text": "I am a Senior Researcher in XR Standards at LG Electronics CTO in Seoul, researching 3D Gaussian Splatting applications for XR and immersive media."
+      "text": "I am a Senior Researcher in XR Standards at LG Electronics, building NEXA ONE to turn product design files into 3D Gaussian Splatting training data using exact camera poses and 3D points instead of structure-from-motion. With method and parameters unchanged, its point clouds raised average PSNR from 37.74 to 39.27 dB with NVIDIA NuRec (3DGUT) and from 34.63 to 38.00 dB with Postshot on 5 appliance datasets."
     },
     {
-      "text": "Before that I worked in 3D Graphics at LG Electronics: an interactive 3D Gaussian Splatting display demo with real-time parallax, automated optimization of high-fidelity 3D assets for web and mobile AR on LG.com, and an MCP-based tool, later a self-improving LangGraph agent, that lets marketers run that optimization on their own."
+      "text": "My work also spans synthetic ground-truth labels and simulation / 3D VQA systems, target-less CLOiD camera calibration that cut projection error from over 20 px to under 5 px, and MCP / LangGraph LLM agents whose \"optimize for web\" test reduced a 207.54 MB asset to 4.80 MB in one iteration."
     },
     {
       "text": "I received my M.S. and B.E. in Electronics Engineering from Sogang University. My graduate research covered camera pose estimation and multi-view stereo for omnidirectional imaging."
@@ -55,7 +55,22 @@
           "to": "present",
           "bullets": [
             {
-              "text": "Researching 3D Gaussian Splatting applications for XR and immersive media."
+              "text": "Built NEXA ONE, a 3ds Max plugin that turns product design scenes into 3D Gaussian Splatting training datasets using exact camera poses and 3D points instead of structure-from-motion. On 5 appliance datasets, NEXA point clouds raised average PSNR from 37.74 to 39.27 dB with NVIDIA NuRec (3DGUT) and from 34.63 to 38.00 dB with Postshot, with method and parameters unchanged."
+            },
+            {
+              "text": "Calibrated the uncalibrated head RGB cameras of LG's CLOiD humanoid robot without a calibration target: SAM2 arm segmentation, forward-kinematics pose initialization, and optimization of 5 distortion and 6 pose parameters against the robot's 3D model cut projection error from over 20 px to under 5 px."
+            },
+            {
+              "text": "Added pixel-aligned ground-truth labels to a synthetic 3D data pipeline: metric depth and surface normals as unfiltered 32-bit float EXR, automatic object-ID masks with an annotation file, and dataset-wide depth bounds computed from 8 bounding-box corners per camera instead of every vertex."
+            },
+            {
+              "text": "Stood up Scenesmith agentic indoor-scene generation, SplatTalk 3D VQA and vLLM serving of Qwen3.6-35B across 2 L40S GPUs on a SLURM cluster; loaded Gaussian Splat scenes into NVIDIA Isaac Sim 6.0 and documented its splat rendering artifacts."
+            },
+            {
+              "text": "Prototyped a LangGraph pipeline for robot-learning simulation-scene context: household purchase records feed member personas, a simulated family discussion, appliance placement and long-horizon robot task queries; run on made-up sample data."
+            },
+            {
+              "text": "Researched importance-weighted camera placement for Gaussian Splatting using image gradients, depth edges, SAM3 segmentation and OCR lifted into a 3D importance field; built a 23-scene appliance dataset and labeling tool. In a preliminary result on one scene, naive close-ups lowered important-region PSNR to 33.78 dB versus 35.02 dB orbit-only; a patch-crop training schedule recovered 34.98 dB and reached 35.25 dB."
             }
           ]
         },
@@ -65,20 +80,37 @@
           "to": "2025-12",
           "bullets": [
             {
-              "text": "Built an interactive display demo with 3D Gaussian Splatting reconstructed from V-Ray renders, integrating HTC Vive tracking with Unreal Engine 5 nDisplay for real-time parallax; rendered in real time at 4K and presented to executive leadership."
+              "text": "Developed an MCP-based tool that lets marketers run 3D asset optimization autonomously, then extended it into a self-improving LangGraph agent with agentic optimization loops."
+            },
+            {
+              "text": "Implemented a LangGraph agent in which an LLM selects a preset, then a capped measure / decide / optimize loop gives it measured metrics (gltf-transform) and targets; it accepts the result or sets the next RapidCompact parameters. On a test asset, \"optimize for web\" took 207.54 MB to 4.80 MB (-97.7%) and 2,607,777 to 231,456 triangles (-91.1%) in one iteration."
+            },
+            {
+              "text": "Built an MCP server exposing V-Ray-to-PBR conversion and optimization to an LLM chat through a sequential job queue with progress tracking and e-mail notices; reworked the pipeline into headless Blender background jobs to fix context errors in server threads."
             },
             {
               "text": "Automated the optimization of high-fidelity 3D assets (3ds Max + V-Ray) for web and mobile AR: 200+ assets, average file size from about 4 GB to about 4 MB, deployed on LG.com (US) so customers can view TV products at real scale."
             },
             {
-              "text": "Developed an MCP-based tool that lets marketers run 3D asset optimization autonomously, then extended it into a self-improving LangGraph agent with agentic optimization loops."
+              "text": "Built 3DGTP AUTO, a Python tool for headless 3ds Max preprocessing, V-Ray-to-PBR conversion, preset-driven mesh and texture optimization with combinatorial parameter sweeps, and Blender post-processing to GLB and USDZ. Wrote a screen-image replacement script with automatic inspection renders and used it to update 136 TV assets, each checked in iPhone AR."
+            },
+            {
+              "text": "Built an interactive display demo with 3D Gaussian Splatting reconstructed from V-Ray renders, integrating HTC Vive tracking with Unreal Engine 5 nDisplay for real-time parallax; rendered in real time at 4K and presented to executive leadership. The V-Ray baseline takes about 40 minutes per frame on average."
             }
           ]
         },
         {
           "title": "Researcher, 3D Graphics",
           "from": "2022-02",
-          "to": "2023-02"
+          "to": "2023-02",
+          "bullets": [
+            {
+              "text": "Fixed an ELoom3D cloth-simulator bug that made single-UV garments load slower than multi-UV ones; after the fix, a sample garment loaded in 0.06 s (single UV) vs. 0.21 s (multi UV)."
+            },
+            {
+              "text": "Improved automatic quad-mesh post-processing of Instant Meshes output for simulated garments: removed flipped and overlapping faces and merged nearby vertices without opening holes."
+            }
+          ]
         }
       ]
     },
@@ -472,7 +504,110 @@
   ],
   "projects": [
     {
-      "title": "3D Gaussian Splatting Interactive Display Demo",
+      "title": "NEXA — 3D Design Files to Gaussian Splatting Training Data",
+      "org": "LG Electronics CTO",
+      "summary": "NEXA ONE turns product design scenes into 3D Gaussian Splatting training datasets, exporting exact camera poses and 3D points instead of structure-from-motion. Structure-from-motion fails on repetitive and textureless surfaces; it failed on a massage-chair scene, while NEXA removes that estimation step.",
+      "bullets": [
+        {
+          "text": "Showed NEXA point clouds are a drop-in input upgrade: on 5 appliance datasets with method and parameters unchanged, average PSNR rose from 37.74 to 39.27 dB with NVIDIA NuRec (3DGUT) and from 34.63 to 38.00 dB with Postshot."
+        },
+        {
+          "text": "Built the 3ds Max plugin with automatic camera trajectories, exact camera poses and renderer-derived intrinsics exported in COLMAP format, point-cloud initialization, live camera previews and a non-blocking batch render loop for V-Ray CPU/GPU and scanline."
+        },
+        {
+          "text": "Designed view-proportional, occlusion-aware point sampling with a custom 3ds Max ray caster: per-object voxel grids, bounding-sphere pre-culling and backface culling place colored points only on surfaces the cameras actually see."
+        },
+        {
+          "text": "Implemented shape-adaptive camera placement: ray-cast probing builds a pseudo-hull around an arbitrary scene and a Fibonacci lattice spreads cameras uniformly over it, so the user sets only the camera count."
+        },
+        {
+          "text": "Wrote the Python preprocessing CLI (Open3D, OpenCV, NumPy) to merge rendered camera sets, back-project depth into colored point clouds with voxel averaging and statistical outlier removal, extract masks, and convert datasets for Postshot, nerfstudio and research trainers."
+        }
+      ],
+      "tags": [
+        "3D Gaussian Splatting",
+        "3ds Max",
+        "COLMAP",
+        "V-Ray",
+        "NVIDIA NuRec",
+        "Postshot",
+        "Open3D",
+        "OpenCV",
+        "NumPy"
+      ]
+    },
+    {
+      "title": "3D Asset Optimization Agent (MCP + LangGraph)",
+      "org": "LG Electronics CTO, 3D Graphics",
+      "summary": "An MCP-based tool that lets marketers run 3D asset optimization on their own, later extended into a self-improving LangGraph agent with agentic optimization loops.",
+      "bullets": [
+        {
+          "text": "Implemented a LangGraph 3D asset optimization agent; on a test asset, \"optimize for web\" took 207.54 MB to 4.80 MB (-97.7%) and 2,607,777 to 231,456 triangles (-91.1%) in one iteration."
+        },
+        {
+          "text": "An LLM selects a preset from the request, then a capped measure / decide / optimize loop gives it the measured metrics (gltf-transform) and the targets; it accepts the result or sets the next RapidCompact parameters."
+        },
+        {
+          "text": "Built an MCP server exposing V-Ray-to-PBR conversion and optimization to an LLM chat (Claude Sonnet 4), with a sequential job queue, progress tracking and e-mail notices for long-running jobs."
+        },
+        {
+          "text": "Reworked the pipeline into headless Blender background jobs to fix context errors in server threads."
+        },
+        {
+          "text": "Ran a baseline test of plain MCP tools without an agent: 4 of 5 natural-language scenarios succeeded (asset conversion, marketing-image generation, model upload), before redirecting the design from a chat host over tools to a planning agent."
+        }
+      ],
+      "tags": [
+        "MCP",
+        "LangGraph",
+        "LLM",
+        "RapidCompact",
+        "gltf-transform",
+        "Blender",
+        "3D asset optimization"
+      ],
+      "image": {
+        "file": "assets/pubs/woojunepark-2026-lge-asset-optimization-agent-fig1-agent-loop.svg",
+        "source": "Original diagram drawn for this site from the cited claims, 2026-11-11",
+        "caption": "A marketer runs 3D asset optimization through the MCP-based tool; the LangGraph agent adds agentic optimization loops.",
+        "alt": "Three boxes in a row joined by arrows: Marketer, then a filled black box labelled MCP tool, then 3D asset optimization. A red curved arrow returns from the last box to the MCP tool box. Red text below reads LangGraph agent, agentic optimization loops.",
+        "credit": "Diagram drawn for this site"
+      }
+    },
+    {
+      "title": "Physical AI Data — Robot Calibration, Simulation and Scene Context",
+      "org": "LG Electronics CTO",
+      "summary": "Synthetic ground-truth data, target-less camera calibration for LG's CLOiD humanoid robot, and research systems for simulation, 3D VQA and vision-language navigation. A LangGraph scene-context prototype runs on made-up sample data for robot learning.",
+      "bullets": [
+        {
+          "text": "Calibrated CLOiD's uncalibrated head RGB cameras without a calibration target: SAM2 arm segmentation, forward-kinematics pose initialization and optimization of 5 distortion and 6 pose parameters against the robot's 3D model cut projection error from over 20 px to under 5 px."
+        },
+        {
+          "text": "Added pixel-aligned ground-truth labels to a synthetic 3D data pipeline: metric depth and surface normals as unfiltered 32-bit float EXR, automatic object-ID masks with an annotation file, and dataset-wide depth bounds computed from 8 bounding-box corners per camera instead of every vertex."
+        },
+        {
+          "text": "Stood up Scenesmith agentic indoor-scene generation (SAM3D assets), SplatTalk 3D VQA and vLLM serving of Qwen3.6-35B across 2 L40S GPUs on a SLURM cluster; loaded Gaussian Splat scenes into NVIDIA Isaac Sim 6.0 and documented its splat rendering artifacts."
+        },
+        {
+          "text": "Reproduced the evaluation of a Gaussian-Splatting-based vision-language navigation foundation model: 6,000 episodes over 938 scenes in about 100 hours on 2 GPUs, to size compute before adopting it."
+        },
+        {
+          "text": "Prototyped a LangGraph pipeline that turns a household purchase record into simulation-scene context for robot learning: member personas (NVIDIA Nemotron Persona Korean), a simulated family discussion, appliance placement and long-horizon robot task queries; run on made-up sample data."
+        }
+      ],
+      "tags": [
+        "SAM2",
+        "Forward kinematics",
+        "NVIDIA Isaac Sim 6.0",
+        "Scenesmith",
+        "SplatTalk",
+        "vLLM",
+        "SLURM",
+        "LangGraph"
+      ]
+    },
+    {
+      "title": "3D Gaussian Splatting Interactive Display Demo (2025)",
       "org": "LG Electronics CTO, 3D Graphics",
       "summary": "An interactive display demo built on 3D Gaussian Splatting reconstructed from V-Ray renders, with real-time parallax.",
       "bullets": [
@@ -484,6 +619,12 @@
         },
         {
           "text": "Presented to executive leadership."
+        },
+        {
+          "text": "Built the viewer-tracked demo with Live Link tracking into an nDisplay in-camera-VFX setup driven through Switchboard, with the virtual scene calibrated to the measured screen."
+        },
+        {
+          "text": "Captured a meeting room as a Gaussian Splat scene using own intrinsic calibration code, 550 photos (350 used), Reality Capture alignment with manual control points, Postshot training and Unreal Engine scene setup; derived capture guidelines from the failures."
         }
       ],
       "tags": [
@@ -491,7 +632,9 @@
         "Unreal Engine 5",
         "nDisplay",
         "HTC Vive",
-        "V-Ray"
+        "V-Ray",
+        "Live Link",
+        "Postshot"
       ],
       "image": {
         "file": "assets/pubs/woojunepark-2026-lge-3dgs-display-demo-fig1-pipeline.svg",
@@ -514,13 +657,24 @@
         },
         {
           "text": "Deployed on LG.com (US) for real-scale mobile AR viewing."
+        },
+        {
+          "text": "Built 3DGTP AUTO, a Python tool that converts 3ds Max + V-Ray product scenes into lightweight GLB and USDZ web/AR assets through headless preprocessing, V-Ray-to-PBR conversion, preset-driven mesh and texture optimization with combinatorial parameter sweeps, and Blender post-processing."
+        },
+        {
+          "text": "Wrote a script that swaps screen images inside existing optimized TV assets and regenerates GLB and USDZ with automatic inspection renders; used it to update 136 TV assets, each checked in iPhone AR."
         }
       ],
       "tags": [
         "3D asset optimization",
         "3ds Max",
         "V-Ray",
-        "Web/Mobile AR"
+        "Web/Mobile AR",
+        "3DGTP AUTO",
+        "Python",
+        "Blender",
+        "GLB",
+        "USDZ"
       ],
       "image": {
         "file": "assets/pubs/woojunepark-2026-lge-3d-asset-optimization-fig1-file-size.svg",
@@ -531,22 +685,32 @@
       }
     },
     {
-      "title": "Asset Optimization Agent (MCP + LangGraph)",
-      "org": "LG Electronics CTO, 3D Graphics",
-      "summary": "An MCP-based tool that lets marketers run 3D asset optimization on their own, later extended into a self-improving LangGraph agent with agentic optimization loops.",
-      "tags": [
-        "MCP",
-        "LangGraph",
-        "LLM agents",
-        "3D asset optimization"
+      "title": "Importance-Weighted Camera Placement for Gaussian Splatting",
+      "org": "LG Electronics CTO",
+      "summary": "Research on importance-weighted camera placement, lifting image gradients, depth edges, SAM3 segmentation and OCR into a 3D importance field for camera selection. Results are preliminary; the close-up training experiment covers one scene.",
+      "bullets": [
+        {
+          "text": "Researched per-view importance heatmaps lifted into a 3D importance field for Gaussian Splatting camera selection; built a 23-scene appliance dataset and a labeling tool."
+        },
+        {
+          "text": "Measured that uniformly adding views saturates: tripling a Gaussian Splatting capture from 300 to 900 uniformly placed images changed PSNR by at most +0.14 dB, motivating importance-aware camera placement."
+        },
+        {
+          "text": "Built a single benchmark harness for next-best-view / active view selection, running FisherRF, MUSIQ, ACP, CrossScore and a random baseline from their released code, plus re-implementations of SA-RegGS and my own method."
+        },
+        {
+          "text": "Preliminary result on one scene: naively adding close-up images lowered PSNR on the semantically important region to 33.78 dB versus 35.02 dB orbit-only; a patch-crop training schedule recovered 34.98 dB and reached 35.25 dB."
+        }
       ],
-      "image": {
-        "file": "assets/pubs/woojunepark-2026-lge-asset-optimization-agent-fig1-agent-loop.svg",
-        "source": "Original diagram drawn for this site from the cited claims, 2026-11-11",
-        "caption": "A marketer runs 3D asset optimization through the MCP-based tool; the LangGraph agent adds agentic optimization loops.",
-        "alt": "Three boxes in a row joined by arrows: Marketer, then a filled black box labelled MCP tool, then 3D asset optimization. A red curved arrow returns from the last box to the MCP tool box. Red text below reads LangGraph agent, agentic optimization loops.",
-        "credit": "Diagram drawn for this site"
-      }
+      "tags": [
+        "Gaussian Splatting",
+        "SAM3",
+        "OCR",
+        "Next-best-view",
+        "Active view selection",
+        "FisherRF",
+        "SA-RegGS"
+      ]
     },
     {
       "title": "Camera Pose Estimation and Multi-View Stereo for Mosaic-Based Omnidirectional Imaging",
@@ -621,34 +785,63 @@
   ],
   "skills": [
     {
-      "group": "3D vision and reconstruction",
+      "group": "3D reconstruction and neural rendering",
       "items": [
         "3D Gaussian Splatting",
         "Camera pose estimation",
         "Multi-view stereo",
-        "SfM-based camera calibration",
-        "Omnidirectional imaging",
-        "Single image super resolution",
-        "Deep learning"
+        "Structure-from-motion",
+        "COLMAP",
+        "NVIDIA NuRec",
+        "Postshot",
+        "nerfstudio",
+        "Next-best-view"
       ]
     },
     {
-      "group": "3D graphics and real-time rendering",
+      "group": "AI agents and LLM systems",
       "items": [
+        "MCP",
+        "LangGraph",
+        "LLM",
+        "gltf-transform",
+        "RapidCompact",
+        "vLLM"
+      ]
+    },
+    {
+      "group": "Robotics and simulation",
+      "items": [
+        "Forward kinematics",
+        "SAM2",
+        "NVIDIA Isaac Sim 6.0",
+        "Scenesmith",
+        "SplatTalk",
+        "SLURM",
+        "Vision-language navigation"
+      ]
+    },
+    {
+      "group": "3D graphics and tooling",
+      "items": [
+        "3ds Max",
+        "V-Ray",
+        "Blender",
+        "Simplygon",
         "Unreal Engine 5 nDisplay",
         "HTC Vive tracking",
-        "V-Ray",
-        "3ds Max",
         "Web and mobile AR",
         "3D asset optimization"
       ]
     },
     {
-      "group": "AI agents",
+      "group": "Languages and libraries",
       "items": [
-        "MCP",
-        "LangGraph",
-        "Agentic optimization loops"
+        "Python",
+        "C++",
+        "Open3D",
+        "OpenCV",
+        "NumPy"
       ]
     }
   ],
