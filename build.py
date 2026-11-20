@@ -143,11 +143,17 @@ def keywords_html(pub: dict) -> str:
 # Presentation only: which coloured line an entry is drawn on is read from words already in the data.
 
 AGENT_WORDS = ("mcp", "langgraph", "llm agent", "agentic")
-LINE_NAMES = {"v": "3D vision", "a": "AI agents"}
+PHYSICAL_WORDS = ("physical ai", "humanoid", "robot")
+# (key, code label, words that put an entry on the line). The key is the code's CSS class; the order is the order of
+# the codes. The line without words is the default line.
+LINES = (("v", "3D vision", ()), ("a", "AI agents", AGENT_WORDS), ("p", "Physical AI", PHYSICAL_WORDS))
+LINE_NAMES = {k: name for k, name, _ in LINES}
+DEFAULT_LINE = next(k for k, _, words in LINES if not words)
 
 
-def on_agent_line(texts: list[str]) -> bool:
-    return any(w in (t or "").lower() for t in texts for w in AGENT_WORDS)
+def on_line(key: str, texts: list[str]) -> bool:
+    words = next(w for k, _, w in LINES if k == key)
+    return any(w in (t or "").lower() for t in texts for w in words)
 
 
 def year_f(v: str | None, today: float) -> float:
@@ -479,15 +485,20 @@ def print_page(data: dict) -> str:
 """
 
 
-def line_codes(on_ai: bool, on_3d: bool = True) -> str:
-    codes = (['<span class="code v">3D vision</span>'] if on_3d else []) + (['<span class="code a">AI agents</span>'] if on_ai else [])
+def line_codes(keys: set[str]) -> str:
+    codes = [f'<span class="code {k}">{escape(name)}</span>' for k, name, _ in LINES if k in keys]
     return f'<span class="codes">{"".join(codes)}</span>'
 
 
-def project_lines(prj: dict) -> tuple[bool, bool]:
+def project_lines(prj: dict) -> set[str]:
+    """The lines a project is drawn on, read from its title and tags. A worded line applies when one of its words
+    appears; the default line (3D vision) applies when no worded line does, or when a tag belongs to none of them."""
     tags = prj.get("tags") or []
-    on_ai = on_agent_line(tags + [prj.get("title", "")])
-    return on_ai, (not on_ai) or any(not on_agent_line([t]) for t in tags)
+    worded = [k for k, _, words in LINES if words]
+    keys = {k for k in worded if on_line(k, tags + [prj.get("title", "")])}
+    if not keys or any(not any(on_line(k, [t]) for k in worded) for t in tags):
+        keys.add(DEFAULT_LINE)
+    return keys
 
 
 def project_html(prj: dict, up: str, home: bool = False) -> str:
@@ -502,7 +513,7 @@ def project_html(prj: dict, up: str, home: bool = False) -> str:
     ident = "" if home else f' id="{slug(prj["title"])}"'
     return (f'<article class="job{" has-fig" if img else ""}"{ident}><div class="job-text">'
             f'<{"h3" if home else "h2"} class="job-title">{title}</{"h3" if home else "h2"}>'
-            f'<p class="job-meta">{line_codes(*project_lines(prj))}<span>{meta}</span></p>'
+            f'<p class="job-meta">{line_codes(project_lines(prj))}<span>{meta}</span></p>'
             f'<p class="job-sum{"" if bullets else " lead"}">{escape(prj.get("summary", ""))}</p>'
             + (f'<ul class="res">{bullets}</ul>' if bullets else "")
             + (f'<ul class="tags">{tags}</ul>' if tags else "") + f"</div>{img}</article>")
@@ -555,7 +566,7 @@ def home_html(data: dict) -> str:
            f'{fmt_range(cur[1].get("from"), cur[1].get("to"))}<br>{escape(p.get("location", ""))}</p>') if cur else ""
     lede = f'<p class="lede">{escape(about[0]["text"])}</p>' if about else ""
     lines = [project_lines(x) for x in data.get("projects") or []]
-    codes = (f'<p class="hero-codes">{line_codes(any(a for a, _ in lines), any(v for _, v in lines))}</p>' if lines else "")
+    codes = (f'<p class="hero-codes">{line_codes(set().union(*lines))}</p>' if lines else "")
     hero = (f'<section class="hero"><h1>{escape(p["name"])} <span class="h1-sub">{escape(sub)}</span></h1>{photo}'
             f'<div class="hero-now">{now}</div><div class="hero-links">{codes}{links_html(data, "")}</div>{lede}</section>')
     work = "".join(project_html(x, "", home=True) for x in data.get("projects") or [])

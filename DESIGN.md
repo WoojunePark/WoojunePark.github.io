@@ -217,6 +217,12 @@ components:
     typography: "{typography.code}"
     rounded: "{rounded.none}"
     padding: "0 0.5rem"
+  code-physical:
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.bg}"
+    typography: "{typography.code}"
+    rounded: "{rounded.none}"
+    padding: "0 0.5rem"
   band-label:
     textColor: "{colors.ink}"
     typography: "{typography.band-label}"
@@ -351,8 +357,9 @@ Solid, square, no border.
 - **Hover / Focus:** the ground switches to red, instantly. Focus is a 3px red outline offset 3px, the same on every focusable element.
 
 ### Codes (chips)
-- **Style:** 0.75rem bold, padding 0 0.5rem, square, 1.5px outline. "3D vision" is ink outline on white; "AI agents" is solid red with white text.
-- **State:** static labels placed before a project's meta line. Never interactive, never used for tags. Tags are a plain grey list separated by middle dots.
+- **Style:** 0.75rem bold, padding 0 0.5rem, square, 1.5px outline. "3D vision" is ink outline on white; "AI agents" is solid red with white text; "Physical AI" is solid ink with white text. A new code is told apart by fill (outline, ink, red), never by a new colour.
+- **State:** static labels placed before a project's meta line, in the order 3D vision, AI agents, Physical AI; they wrap on narrow screens. Never interactive, never used for tags. Tags are a plain grey list separated by middle dots.
+- **Source:** presentation only. `build.py` (`LINES`) reads which codes a project gets from words already in its title and tags: "AI agents" for MCP, LangGraph, LLM agent or agentic; "Physical AI" for physical AI, humanoid or robot; "3D vision" when neither applies or when a tag belongs to neither. A code never states a fact the record does not hold: to give a project a code, the content repository adds the word to that project's data.
 
 ### Bands
 - **Structure:** 6px ink rule, label (band label size, optional one-line grey note under it, max 15em), body.
