@@ -518,7 +518,10 @@ def project_card(prj: dict, up: str, home: bool = False) -> str:
     meta = " · ".join(x for x in (escape(prj.get("org", "")), fmt_range(prj.get("from"), prj.get("to"))) if x)
     st = project_stat(prj)
     num = (f'<div class="card-num"><b>{escape(st["number"])}</b><p>{escape(st["text"])}</p></div>') if st else ""
-    img = figure_html(prj.get("image"), up, "card-fig")
+    fig = prj.get("image")
+    if fig and not str(fig.get("source") or "").startswith("http"):
+        fig = {**fig, "caption": ""}     # a diagram drawn for the site says it in its boxes; its alt text describes it
+    img = figure_html(fig, up, "card-fig")
     go = (f'<p class="card-go"><a class="go" href="{project_href(prj, up)}"><span>How it works</span>'
           f'<span aria-hidden="true">→</span></a></p>') if has_page else ""
     more = ""
