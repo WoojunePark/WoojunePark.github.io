@@ -1,7 +1,7 @@
 {
   "schema_version": "final-offer.site-public/v1",
-  "updated": "2026-11-13",
-  "content_hash": "sha256:4eeb084d90bf1cd878b8a197717f1e1213427e173cb6d8205e851e5d22dbfb49",
+  "updated": "2026-11-24",
+  "content_hash": "sha256:afe366b57206395c82db5b934c356e03b15350d851b2cc6d94804282abc5d75b",
   "site": {
     "url": "https://woojunepark.github.io",
     "cv_file_prefix": "CV_Woojune_Park",
@@ -572,6 +572,134 @@
         "caption": "A marketer runs 3D asset optimization through the MCP-based tool; the LangGraph agent adds agentic optimization loops.",
         "alt": "Three boxes in a row joined by arrows: Marketer, then a filled black box labelled MCP tool, then 3D asset optimization. A red curved arrow returns from the last box to the MCP tool box. Red text below reads LangGraph agent, agentic optimization loops.",
         "credit": "Diagram drawn for this site"
+      },
+      "page": {
+        "slug": "asset-optimization-agent",
+        "title": "3D asset optimization agent",
+        "when": "2025",
+        "hero": {
+          "number": "−97.7%",
+          "text": "file size, 207.54 MB to 4.80 MB, when asked to \"optimize for web\"",
+          "note": "One test asset, one iteration of the agent."
+        },
+        "facts": [
+          {
+            "number": "−91.1%",
+            "text": "triangles, 2,607,777 to 231,456, same run"
+          },
+          {
+            "number": "4 of 5",
+            "text": "scenarios passed with plain MCP tools, before the agent"
+          }
+        ],
+        "sections": [
+          {
+            "kind": "walk",
+            "id": "how",
+            "title": "How the agent works",
+            "note": "A LangGraph state machine. The red stretch is the agent's own loop; Decision making leaves it for Finalize.",
+            "steps": [
+              {
+                "title": "Input validation",
+                "text": "Validates the input asset before any optimization runs."
+              },
+              {
+                "title": "Measure",
+                "text": "Measures the asset with the gltf-transform CLI and passes the metrics on.",
+                "line": "loop"
+              },
+              {
+                "title": "Decision making",
+                "text": "An LLM gets the measured metrics and the targets. It picks a preset, or one of up to 5 adaptive parameter steps, or accepts the result and goes to Finalize. The loop is capped.",
+                "loop": true,
+                "line": "loop",
+                "calls": {
+                  "label": "context ⇄ decision",
+                  "kind": "LLM",
+                  "name": "LLM reasoning"
+                }
+              },
+              {
+                "title": "Optimization run",
+                "text": "Runs RapidCompact, a 3D asset optimization tool, with the parameters the LLM set.",
+                "loop": true,
+                "line": "jump",
+                "calls": {
+                  "label": "tool call ⇄",
+                  "kind": "tool",
+                  "name": "RapidCompact"
+                },
+                "back": "Back to Measure"
+              },
+              {
+                "title": "Finalize",
+                "text": "Outputs the optimized GLB with a report.",
+                "output": {
+                  "kind": "output",
+                  "name": "Optimized GLB + report"
+                }
+              }
+            ],
+            "figure": {
+              "heading": "The whole state machine",
+              "file": "assets/pubs/woojunepark-2026-lge-asset-optimization-agent-fig2-state-machine.svg",
+              "source": "Redrawn for this site from the owner's design of the state machine, 2026-11-16",
+              "caption": "Redrawn from my design of the state machine.",
+              "alt": "Five state nodes. Input validation leads to measure, measure to decision making. Decision making sends context to an LLM reasoning box and gets a decision back. A red loop runs from decision making to optimization run, which calls the RapidCompact tool, and back to measure. When the decision is complete, decision making leads to finalize, which outputs the optimized GLB and a report.",
+              "credit": "Diagram drawn for this site"
+            }
+          },
+          {
+            "kind": "list",
+            "id": "stages",
+            "title": "From a tool to an agent",
+            "items": [
+              {
+                "when": "2025-08 to 2025-09",
+                "title": "An MCP server exposes a 3D asset conversion pipeline to an LLM chat (Claude Sonnet 4).",
+                "text": "Tools for V-Ray-to-PBR conversion and optimization over a sequential job queue, with progress tracking and e-mail notices for long-running jobs (estimated 30–60 minutes each). The pipeline was reworked into headless Blender background jobs to fix context errors in server threads."
+              },
+              {
+                "when": "2025-09",
+                "title": "Without an agent, 4 of 5 natural-language scenarios succeeded.",
+                "text": "Asset conversion, marketing-image generation and model upload. The design then moved from a chat host over tools to a planning agent."
+              },
+              {
+                "when": "2025",
+                "title": "A LangGraph agent: an LLM selects a preset from the request, then runs a capped measure / decide / optimize loop.",
+                "text": "Designed as a state machine, then implemented."
+              }
+            ]
+          },
+          {
+            "kind": "prose",
+            "id": "why",
+            "title": "Why it was built",
+            "paragraphs": [
+              {
+                "text": "High-fidelity 3D product assets authored in 3ds Max + V-Ray must be optimized before they run in web and mobile AR. That optimization was automated for LG.com (US): 200+ assets, from about 4 GB (the original 3ds Max file plus its textures) to about 4 MB on average; individual assets vary widely."
+              },
+              {
+                "text": "The MCP-based tool lets marketers run that optimization on their own; in the agent, an LLM sets the optimizer's parameters from measured results."
+              }
+            ],
+            "related": {
+              "text": "The optimization pipeline is its own project:",
+              "project": "Automated 3D Asset Optimization for Mobile AR on LG.com"
+            }
+          },
+          {
+            "kind": "prose",
+            "id": "role",
+            "title": "My part and stack",
+            "paragraphs": [
+              {
+                "text": "I designed the agent's state machine, built the MCP server and implemented the agent."
+              }
+            ],
+            "tags": true
+          }
+        ]
       }
     },
     {

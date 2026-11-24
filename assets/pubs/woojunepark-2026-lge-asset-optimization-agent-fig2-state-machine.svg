@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 456" width="720" height="912" role="img" aria-labelledby="ft fd">
+<title id="ft">The agent as a LangGraph state machine</title>
+<desc id="fd">Five state nodes. Input validation leads to measure, measure to decision making. Decision making sends context to an LLM reasoning box and gets a decision back. A red loop runs from decision making to optimization run, which calls the RapidCompact tool, and back to measure. When the decision is complete, decision making leads to finalize, which outputs the optimized GLB and a report.</desc>
+<style>
+text { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+.n rect { fill: #fff; stroke: #0b0b0c; stroke-width: 2; }
+.n.loop rect { stroke: #d81e15; stroke-width: 2.5; }
+.n text { fill: #0b0b0c; font-size: 14px; font-weight: 700; }
+.n .no { font-size: 11px; fill: #5c6066; }
+.x rect { fill: #fff; stroke: #0b0b0c; stroke-width: 1; }
+.x text { fill: #0b0b0c; font-size: 13px; font-weight: 700; }
+.x .kind { font-size: 10px; font-weight: 400; fill: #5c6066; }
+.lab { font-size: 11px; font-weight: 700; fill: #0b0b0c; }
+.lab.r { fill: #d81e15; }
+</style>
+<defs>
+<marker id="ak" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="#0b0b0c"/></marker>
+<marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="#d81e15"/></marker>
+</defs>
+<g fill="none" stroke="#0b0b0c" stroke-width="2"><path d="M90 54V91" marker-end="url(#ak)"/><path d="M50 222V343" marker-end="url(#ak)"/><path d="M90 390V409" marker-end="url(#ak)"/></g>
+<g fill="none" stroke="#0b0b0c" stroke-width="1.25"><path d="M275 55V91" marker-start="url(#ak)" marker-end="url(#ak)"/><path d="M140 222V276H198" marker-end="url(#ak)"/><path d="M199 296H110V224" marker-end="url(#ak)"/></g>
+<g fill="none" stroke="#d81e15" stroke-width="2.5"><path d="M90 138V175" marker-end="url(#ar)"/><path d="M170 200H275V140" marker-end="url(#ar)"/><path d="M199 116H173" marker-end="url(#ar)"/></g>
+<text class="lab r" x="101" y="161">metrics</text>
+<text class="lab r" x="180" y="216">preset (step 0), or</text>
+<text class="lab r" x="180" y="229">≤ 5 adaptive steps</text>
+<text class="lab" x="283" y="77">tool call</text>
+<text class="lab" x="146" y="270">1 context</text>
+<text class="lab" x="116" y="311">2 decision</text>
+<text class="lab" x="58" y="332">complete</text>
+<g class="n"><rect x="10" y="10" width="160" height="44"/><text class="no" x="18" y="24">1</text><text x="90" y="38" text-anchor="middle">Input validation</text></g>
+<g class="n"><rect x="10" y="94" width="160" height="44"/><text class="no" x="18" y="108">2</text><text x="90" y="122" text-anchor="middle">Measure</text></g>
+<g class="n loop"><rect x="10" y="178" width="160" height="44"/><text class="no" x="18" y="192">3</text><text x="90" y="206" text-anchor="middle">Decision making</text></g>
+<g class="n loop"><rect x="200" y="94" width="150" height="44"/><text class="no" x="208" y="108">4</text><text x="275" y="122" text-anchor="middle">Optimization run</text></g>
+<g class="n"><rect x="10" y="346" width="160" height="44"/><text class="no" x="18" y="360">5</text><text x="90" y="374" text-anchor="middle">Finalize</text></g>
+<g class="x"><rect x="200" y="10" width="150" height="44"/><text class="kind" x="208" y="23">tool</text><text x="275" y="40" text-anchor="middle">RapidCompact</text></g>
+<g class="x"><rect x="200" y="262" width="150" height="44"/><text class="kind" x="208" y="275">LLM</text><text x="275" y="294" text-anchor="middle">LLM reasoning</text></g>
+<g class="x"><rect x="10" y="412" width="160" height="40"/><text class="kind" x="18" y="425">output</text><text x="90" y="442" text-anchor="middle" style="font-size:12px">Optimized GLB + report</text></g>
+</svg>
