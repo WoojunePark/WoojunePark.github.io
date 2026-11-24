@@ -213,3 +213,66 @@ details.abstract .src { font-size: .8125rem; color: var(--muted); }
 @media (max-width: 63.99rem) {
   .jobs { border-top: var(--bar) solid var(--ink); padding: 1rem 0 2.75rem; }
 }
+
+/* ---- project pages (/portfolio/<slug>/): the measured number, then the steps on a vertical line */
+.pp-head { padding: 1.25rem 0 2.25rem; }
+.pp-crumb { font-size: .875rem; font-weight: 700; }
+.pp-crumb a { text-decoration: none; }
+.pp-crumb a:hover { text-decoration: underline; }
+.pp-head .job-meta { margin: .9rem 0 .6rem; }
+.pp-head h1 { font-size: clamp(2.75rem, 1.6rem + 5.4vw, 5.5rem); line-height: .92; letter-spacing: -.04em; }
+.pp-num { margin-top: 1.5rem; border-top: 2px solid var(--ink); padding-top: .5rem; }
+.pp-num b { display: block; font-size: clamp(4.5rem, 2rem + 13vw, 9rem); font-weight: 700; line-height: .9; letter-spacing: -.05em;
+  margin-left: -.04em; white-space: nowrap; }
+.pp-what { margin-top: .55rem; font-size: clamp(1.1875rem, 1.05rem + .5vw, 1.4375rem); line-height: 1.3; font-weight: 700;
+  letter-spacing: -.012em; max-width: 24em; }
+.pp-how { margin-top: .3rem; font-size: .9375rem; color: var(--muted); }
+.pp-duo { display: grid; grid-template-columns: 1fr 1fr; gap: 0 .875rem; margin-top: 1.25rem; }
+.pp-duo div { border-top: 2px solid var(--ink); padding-top: .4rem; }
+.pp-duo b { display: block; font-size: clamp(2.125rem, 1.6rem + 2.2vw, 3.25rem); line-height: 1; letter-spacing: -.04em; white-space: nowrap; }
+.pp-duo span { display: block; margin-top: .3rem; font-size: .8125rem; line-height: 1.35; color: var(--muted); max-width: 20em; }
+.pp-lede { margin-top: 1.75rem; font-size: clamp(1.375rem, 1.05rem + 1.5vw, 1.9375rem); line-height: 1.3; letter-spacing: -.018em;
+  font-weight: 500; max-width: 28em; }
+.pp .band .tags { margin-top: .75rem; }
+.walk { max-width: 36rem; }
+.walk > li { position: relative; display: grid; grid-template-columns: 2.75rem minmax(0, 1fr); padding-bottom: 1.5rem; }
+.walk > li::before { content: ""; position: absolute; left: calc(1.375rem - 1px); top: 0; bottom: 0; width: 2px; background: var(--ink); }
+.walk > li:last-child::before { display: none; }
+.walk > li.jump::before { width: 0; background: none; border-left: 2px dashed var(--muted); }   /* the walk leaves the loop here */
+.walk > li.in-loop::before { left: calc(1.375rem - 1.5px); width: 3px; background: var(--red); }
+.walk-no { position: relative; z-index: 1; display: grid; place-items: center; width: 2.75rem; height: 2.75rem; background: var(--bg);
+  border: 2px solid var(--ink); font-weight: 700; font-size: 1.1875rem; }
+.walk .loop .walk-no { border: 2.5px solid var(--red); }
+.walk-step { padding: .3rem 0 0 .875rem; }
+.walk h3 { font-size: 1.3125rem; line-height: 1.2; letter-spacing: -.012em; }
+.walk-step > p { margin-top: .3rem; font-size: 1rem; line-height: 1.45; }
+.walk-ext { display: flex; align-items: stretch; margin-top: .6rem; font-size: .875rem; line-height: 1.35; }
+.walk-arrow { flex: 0 0 auto; padding: .35rem .5rem .35rem 0; color: var(--muted); font-weight: 700; }
+.walk-box { display: inline-block; border: 1px solid var(--ink); padding: .3rem .55rem; }
+.walk-box small { display: block; font-size: .6875rem; color: var(--muted); }
+.walk-box b { font-size: .9375rem; }
+.walk-step > .walk-back { margin-top: .6rem; font-size: .875rem; font-weight: 700; color: var(--red); }
+.walk-end { margin-top: .6rem; }
+.pp-fig { margin-top: .5rem; border-top: 2px solid var(--ink); padding-top: .75rem; max-width: 36rem; }
+.pp-fig-h { font-size: 1.1875rem; line-height: 1.3; letter-spacing: -.01em; margin-bottom: .75rem; }
+.pp-figure img { max-width: 27rem; }
+.pp-rows { border-top: 2px solid var(--ink); max-width: 44rem; }
+.pp-rows li { padding: .7rem 0; border-bottom: 1px solid var(--soft); }
+.pp-rows b { display: block; font-size: clamp(1.125rem, 1.02rem + .45vw, 1.3125rem); line-height: 1.3; letter-spacing: -.012em; }
+.pp-rows small { display: block; margin-top: .2rem; font-size: .9375rem; color: var(--muted); }
+.pp-when { display: block; margin-bottom: .1rem; font-size: .875rem; color: var(--muted); }
+.pp-pn { border-top: var(--bar) solid var(--ink); padding: 1rem 0 2.75rem; display: grid; gap: 1rem; }
+.pp-pn a { text-decoration: none; }
+.pp-pn small { display: block; font-size: .875rem; color: var(--muted); }
+.pp-pn b { font-size: 1.1875rem; line-height: 1.3; letter-spacing: -.01em; }
+@media (max-width: 63.99rem) {
+  .pp .band h2 { font-size: 1.6875rem; line-height: 1.04; letter-spacing: -.03em; }   /* no label column: the heading leads */
+}
+@media (min-width: 64rem) {
+  .pp-head { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gap); padding: 2rem 0 3.5rem; }
+  .pp-head > * { grid-column: 1 / -1; }
+  .pp-head > .pp-num { grid-column: 1 / 8; }
+  .pp-head > .pp-duo { grid-column: 8 / 13; margin-top: 1.5rem; align-self: start; }
+  .pp-head > .pp-lede { grid-column: 4 / 11; margin-top: 3rem; }
+  .pp-pn { grid-template-columns: 1fr 1fr; column-gap: var(--gap); padding-bottom: 4.5rem; }
+}

@@ -371,6 +371,9 @@ Solid, square, no border.
 - **Figures:** SVG diagrams in ink, white and red with no frame; raster figures on white with a hairline frame and a height cap. The caption is 0.8125rem grey with the credit on its own smaller line.
 - **Title links:** no underline at rest; a 3px underline on hover.
 
+### Project pages (/portfolio/<slug>/)
+A project with `page` in the data gets its own page; the owner chose the layout on 2026-11-24 (layout B with the number block of A, mockups in the career wiki). Order: back link, codes and title, then the measured number as the largest thing on the page with the condition it was measured under directly below it, two smaller numbers, the summary, then the sections of the data as bands. A `walk` section sets each step as a numbered box on a vertical line with its sentence beside it; the stretch of the line that is the system's own loop is red, and a dashed stretch marks where the walk leaves the loop. The full diagram follows as a map. From 64rem the number takes columns 1 to 7 and the two smaller numbers 8 to 12: it is the page's headline, so it may start in column 1. Red on the walk is the loop signal, not decoration.
+
 ### Publication rows (home)
 Year in the first column (bold, ink from 40rem), title at 1.3125rem bold beside it, venue line in grey with the venue name in ink. Rows are separated by hairlines. Title links underline on hover.
 

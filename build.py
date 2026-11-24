@@ -418,12 +418,14 @@ def band(name: str, title: str, body: str, note: str = "") -> str:
             f'<h2 id="{name}-h">{title}</h2>{note}</div><div class="band-body">{body}</div></section>')
 
 
-def page(data: dict, title: str, active: str, body: str, depth: int, description: str = "") -> str:
+def page(data: dict, title: str, active: str, body: str, depth: int, description: str = "",
+         path: str | None = None) -> str:
     p, site = data["profile"], data.get("site", {})
     up, base = "../" * depth, (site.get("url") or "").rstrip("/")
     nav = [n for n in NAV if n[2] != "portfolio" or data.get("projects")]
-    path = next(h for _, h, k in nav if k == active)
-    cur = ' aria-current="page"'
+    section = next(h for _, h, k in nav if k == active)
+    path = section if path is None else path
+    cur = ' aria-current="page"' if path == section else ' aria-current="true"'   # a sub-page marks its section
     nav_html = "".join(f'<li><a href="{(up + h) or "./"}"{cur if k == active else ""}>{n}</a></li>' for n, h, k in nav)
     desc = escape(description or f'{p["name"]}: {p.get("headline", "")}')
     image = f'<meta property="og:image" content="{base}/{escape(p["photo"])}">' if p.get("photo") else ""
@@ -516,7 +518,93 @@ def project_html(prj: dict, up: str, home: bool = False) -> str:
             f'<p class="job-meta">{line_codes(project_lines(prj))}<span>{meta}</span></p>'
             f'<p class="job-sum{"" if bullets else " lead"}">{escape(prj.get("summary", ""))}</p>'
             + (f'<ul class="res">{bullets}</ul>' if bullets else "")
-            + (f'<ul class="tags">{tags}</ul>' if tags else "") + f"</div>{img}</article>")
+            + (f'<ul class="tags">{tags}</ul>' if tags else "")
+            + (f'<p class="more"><a href="{project_href(prj, up)}">How it works: the project page →</a></p>'
+               if prj.get("page") else "") + f"</div>{img}</article>")
+
+
+# ------------------------------------------------------------------ project pages
+# A project with `page` in the data gets its own page at /portfolio/<slug>/: the measured number first, then the
+# sections in the order of the data (walk: steps on a vertical line; list: dated rows; prose: paragraphs).
+
+def project_href(prj: dict, up: str) -> str:
+    """The project's own page when it has one, else its row on the Portfolio page."""
+    if prj.get("page"):
+        return f'{up}portfolio/{escape(prj["page"]["slug"])}/'
+    return f'{up}portfolio/#{slug(prj["title"])}'
+
+
+def page_figs(prj: dict) -> list[dict]:
+    return [s["figure"] for s in (prj.get("page") or {}).get("sections") or [] if isinstance(s.get("figure"), dict)]
+
+
+def side_box(box: dict | None, cls: str, label: str = "") -> str:
+    if not box:
+        return ""
+    lab = f'<span class="walk-arrow">{escape(label)}</span>' if label else ""
+    return (f'<div class="{cls}">{lab}<span class="walk-box"><small>{escape(box["kind"])}</small>'
+            f'<b>{escape(box["name"])}</b></span></div>')
+
+
+def walk_html(sec: dict, up: str) -> str:
+    steps = []
+    for i, st in enumerate(sec.get("steps") or [], 1):
+        names = [c for c, on in (("loop", st.get("loop")), ("in-loop", st.get("line") == "loop"),
+                                 ("jump", st.get("line") == "jump")) if on]
+        cls = f' class="{" ".join(names)}"' if names else ""
+        calls = st.get("calls") or {}
+        steps.append(f'<li{cls}><span class="walk-no">{i}</span><div class="walk-step">'
+                     f'<h3>{escape(st["title"])}</h3><p>{escape(st["text"])}</p>'
+                     + side_box(calls, "walk-ext", calls.get("label", ""))
+                     + (f'<p class="walk-back">↺ {escape(st["back"])}</p>' if st.get("back") else "")
+                     + side_box(st.get("output"), "walk-end") + "</div></li>")
+    fig = sec.get("figure")
+    head = f'<h3 class="pp-fig-h">{escape(fig["heading"])}</h3>' if fig and fig.get("heading") else ""
+    return (f'<ol class="walk">{"".join(steps)}</ol>'
+            + (f'<div class="pp-fig">{head}{figure_html(fig, up, "pp-figure")}</div>' if fig else ""))
+
+
+def rows_html(sec: dict) -> str:
+    return '<ol class="pp-rows">' + "".join(
+        "<li>" + (f'<span class="pp-when">{escape(str(r["when"]))}</span>' if r.get("when") else "")
+        + f'<b>{escape(r["title"])}</b><small>{escape(r["text"])}</small></li>' for r in sec.get("items") or []) + "</ol>"
+
+
+def prose_html(data: dict, prj: dict, sec: dict, up: str) -> str:
+    out = "".join(f"<p>{escape(x['text'])}</p>" for x in sec.get("paragraphs") or [])
+    rel = sec.get("related") or {}
+    other = next((x for x in data.get("projects") or [] if x.get("title") == rel.get("project")), None)
+    if other:
+        out += f'<p>{escape(rel["text"])} <a href="{project_href(other, up)}">{escape(other["title"])} →</a></p>'
+    tags = "".join(f"<li>{escape(t)}</li>" for t in prj.get("tags") or []) if sec.get("tags") else ""
+    return f'<div class="prose">{out}</div>' + (f'<ul class="tags">{tags}</ul>' if tags else "")
+
+
+def project_page_html(data: dict, prj: dict) -> str:
+    pg, up = prj["page"], "../../"
+    meta = " · ".join(escape(str(x)) for x in (prj.get("org"), pg.get("when")) if x)
+    hero = pg.get("hero")
+    num = (f'<div class="pp-num"><b>{escape(hero["number"])}</b><p class="pp-what">{escape(hero["text"])}</p>'
+           f'<p class="pp-how">{escape(hero["note"])}</p></div>') if hero else ""
+    facts = "".join(f'<div><b>{escape(f["number"])}</b><span>{escape(f["text"])}</span></div>' for f in pg.get("facts") or [])
+    head = (f'<header class="pp-head"><p class="pp-crumb"><a href="../">← Portfolio</a></p>'
+            f'<p class="job-meta">{line_codes(project_lines(prj))}<span>{meta}</span></p>'
+            f'<h1>{escape(pg["title"])}</h1>{num}'
+            + (f'<div class="pp-duo">{facts}</div>' if facts else "")
+            + f'<p class="pp-lede">{escape(prj.get("summary", ""))}</p></header>')
+    bands = []
+    for sec in pg.get("sections") or []:
+        body = (walk_html(sec, up) if sec["kind"] == "walk" else rows_html(sec) if sec["kind"] == "list"
+                else prose_html(data, prj, sec, up))
+        bands.append(band(sec["id"], escape(sec["title"]), body, escape(sec.get("note", ""))))
+    prjs = data.get("projects") or []
+    i = prjs.index(prj)
+    around = [(label, prjs[j]) for label, j in (("Previous", i - 1), ("Next", i + 1)) if 0 <= j < len(prjs)]
+    pn = "".join(f'<a href="{project_href(x, up)}"><small>{label}</small>'
+                 f'<b>{"← " if label == "Previous" else ""}{escape(x["title"])}{" →" if label == "Next" else ""}</b></a>'
+                 for label, x in around)
+    return (f'<div class="pp">{head}{"".join(bands)}'
+            + (f'<nav class="pp-pn" aria-label="Projects">{pn}</nav>' if pn else "") + "</div>")
 
 
 def home_pubs(data: dict) -> str:
@@ -580,6 +668,7 @@ def assets_used(data: dict) -> list[str]:
     files = [data["profile"].get("photo")]
     files += [f.get("file") for p in data.get("publications") or [] for f in pub_figures(p)]
     files += [(p.get("image") or {}).get("file") for p in data.get("projects") or []]
+    files += [f.get("file") for p in data.get("projects") or [] for f in page_figs(p)]
     return [f for f in files if f]
 
 
@@ -652,6 +741,8 @@ def llms_txt(data: dict) -> str:
              f"- [Publications]({base}/publications/): summaries, keywords, abstracts and figures, with schema.org JSON-LD"]
     if data.get("projects"):
         pages.append(f"- [Portfolio]({base}/portfolio/): projects")
+        pages += [f'- [{x["page"]["title"]}]({base}/portfolio/{x["page"]["slug"]}/): how the project works, step by step'
+                  for x in data["projects"] if x.get("page")]
     about = "\n\n".join(a["text"] for a in data.get("about") or [])
     return (f'# {p["name"]}{native}\n\n> {p.get("headline", "")} · {p.get("location", "")}\n\n{about}\n\n'
             f'Every statement on this site is generated from a sourced career record. Last updated {data["updated"]}.\n\n'
@@ -686,6 +777,12 @@ def build(data: dict) -> list[tuple[str, str]]:
         body = page_head(data, "Portfolio") + '<div class="jobs">' + "".join(project_html(x, "../") for x in data["projects"]) + "</div>"
         pages.append(("portfolio/index.html", page(data, f"Portfolio: {name}", "portfolio", body, 1, f"Projects of {who}.")))
         urls.append("portfolio/")
+        for x in data["projects"]:
+            if x.get("page"):
+                rel = f'portfolio/{x["page"]["slug"]}/'
+                pages.append((rel + "index.html", page(data, f'{x["page"]["title"]}: {name}', "portfolio",
+                                                       project_page_html(data, x), 2, x.get("summary", ""), rel)))
+                urls.append(rel)
     sitemap = "".join(f"<url><loc>{base}/{u}</loc><lastmod>{data['updated']}</lastmod></url>" for u in urls)
     pages.append(("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n'
                                  f'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{sitemap}</urlset>\n'))
