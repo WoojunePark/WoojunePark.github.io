@@ -1,7 +1,7 @@
 {
   "schema_version": "final-offer.site-public/v1",
   "updated": "2026-11-24",
-  "content_hash": "sha256:afe366b57206395c82db5b934c356e03b15350d851b2cc6d94804282abc5d75b",
+  "content_hash": "sha256:7117f5a405c97b709fdfa56b51d42c53d5bbbfd173a5dec79ed0839ba0b47011",
   "site": {
     "url": "https://woojunepark.github.io",
     "cv_file_prefix": "CV_Woojune_Park",
@@ -534,7 +534,103 @@
         "Open3D",
         "OpenCV",
         "NumPy"
-      ]
+      ],
+      "page": {
+        "slug": "nexa",
+        "title": "NEXA: 3D design files to Gaussian Splatting training data",
+        "when": "2026",
+        "hero": {
+          "number": "39.27 dB",
+          "text": "average PSNR with NVIDIA NuRec (3DGUT), up from 37.74 dB, with NEXA point clouds as the input",
+          "note": "5 appliance datasets, method and parameters unchanged."
+        },
+        "facts": [
+          {
+            "number": "38.00 dB",
+            "text": "with Postshot, up from 34.63 dB, on the same 5 datasets"
+          },
+          {
+            "number": "No SfM",
+            "text": "exact camera poses and 3D points come from the design file"
+          }
+        ],
+        "sections": [
+          {
+            "kind": "walk",
+            "id": "how",
+            "title": "How NEXA works",
+            "note": "A 3ds Max plugin and a preprocessing CLI, from a product design scene to a training dataset.",
+            "steps": [
+              {
+                "title": "Place the cameras",
+                "text": "Automatic camera trajectories. For an arbitrary scene, ray-cast probing builds a pseudo-hull around it and a Fibonacci lattice spreads cameras uniformly over the hull, so the user sets only the camera count."
+              },
+              {
+                "title": "Render",
+                "text": "A non-blocking batch render loop for V-Ray CPU/GPU and scanline, with live camera previews.",
+                "calls": {
+                  "label": "renders with",
+                  "kind": "renderer",
+                  "name": "V-Ray · scanline"
+                }
+              },
+              {
+                "title": "Export exact cameras",
+                "text": "Exact camera poses and renderer-derived intrinsics are exported in COLMAP format. Nothing is estimated from the images.",
+                "output": {
+                  "kind": "format",
+                  "name": "COLMAP"
+                }
+              },
+              {
+                "title": "Sample the points",
+                "text": "View-proportional, occlusion-aware sampling: a custom 3ds Max ray caster with one voxel grid per object, bounding-sphere pre-culling and backface culling places colored points only on surfaces the cameras actually see."
+              },
+              {
+                "title": "Preprocess",
+                "text": "A Python CLI (Open3D, OpenCV, NumPy) merges separately rendered camera sets, back-projects depth into a colored point cloud with voxel averaging and statistical outlier removal, extracts masks, and converts the dataset for Postshot, nerfstudio and research trainers.",
+                "output": {
+                  "kind": "output",
+                  "name": "3D Gaussian Splatting training dataset"
+                }
+              }
+            ]
+          },
+          {
+            "kind": "list",
+            "id": "evidence",
+            "title": "The problem and the measurement",
+            "items": [
+              {
+                "when": "2026-05",
+                "title": "Structure-from-motion failed on a massage-chair scene.",
+                "text": "Estimated geometry is the weak step for product assets: structure-from-motion fails on repetitive and textureless surfaces. NEXA exports exact camera poses and 3D points from the design file and removes that step."
+              },
+              {
+                "when": "2026-06",
+                "title": "NVIDIA NuRec (3DGUT): average PSNR from 37.74 to 39.27 dB.",
+                "text": "5 appliance datasets, method and parameters unchanged; NEXA point clouds as a drop-in input upgrade."
+              },
+              {
+                "when": "2026-06",
+                "title": "Postshot: average PSNR from 34.63 to 38.00 dB.",
+                "text": "The same 5 appliance datasets, method and parameters unchanged."
+              }
+            ]
+          },
+          {
+            "kind": "prose",
+            "id": "role",
+            "title": "My part and stack",
+            "paragraphs": [
+              {
+                "text": "I built the 3ds Max plugin, designed the point sampling, implemented the shape-adaptive camera placement and wrote the preprocessing CLI."
+              }
+            ],
+            "tags": true
+          }
+        ]
+      }
     },
     {
       "title": "3D Asset Optimization Agent (MCP + LangGraph)",
@@ -732,7 +828,105 @@
         "vLLM",
         "SLURM",
         "LangGraph"
-      ]
+      ],
+      "page": {
+        "slug": "physical-ai-data",
+        "title": "Physical AI data: robot calibration, simulation and scene context",
+        "when": "2026",
+        "hero": {
+          "number": "< 5 px",
+          "text": "projection error of a humanoid robot's head cameras, down from over 20 px, without a calibration target",
+          "note": "The uncalibrated head RGB cameras of LG's CLOiD humanoid robot."
+        },
+        "facts": [
+          {
+            "number": "6,000",
+            "text": "episodes over 938 scenes, a navigation model's evaluation reproduced in about 100 hours on 2 GPUs"
+          },
+          {
+            "number": "32-bit",
+            "text": "float EXR ground truth, metric depth and surface normals, unfiltered"
+          }
+        ],
+        "sections": [
+          {
+            "kind": "walk",
+            "id": "how",
+            "title": "How the calibration works",
+            "note": "Calibration of CLOiD's head RGB cameras without a calibration target.",
+            "steps": [
+              {
+                "title": "Segment the arm",
+                "text": "SAM2 segments the robot arm.",
+                "calls": {
+                  "label": "segments with",
+                  "kind": "model",
+                  "name": "SAM2"
+                }
+              },
+              {
+                "title": "Initialize the pose",
+                "text": "Forward kinematics gives the initial pose."
+              },
+              {
+                "title": "Optimize",
+                "text": "5 distortion and 6 pose parameters are optimized against the robot's 3D model.",
+                "calls": {
+                  "label": "fits against",
+                  "kind": "reference",
+                  "name": "Robot 3D model"
+                }
+              },
+              {
+                "title": "Check the projection",
+                "text": "Projection error went from over 20 px to under 5 px.",
+                "output": {
+                  "kind": "result",
+                  "name": "under 5 px"
+                }
+              }
+            ]
+          },
+          {
+            "kind": "list",
+            "id": "strands",
+            "title": "Data, simulation and scene context",
+            "items": [
+              {
+                "when": "2026-03 to 2026-05",
+                "title": "Pixel-aligned ground-truth labels in a synthetic 3D data pipeline.",
+                "text": "Metric depth and surface normals as unfiltered 32-bit float EXR, automatic object-ID masks with an annotation file, and dataset-wide depth bounds computed from 8 bounding-box corners per camera instead of every vertex."
+              },
+              {
+                "when": "2026-04 to 2026-06",
+                "title": "Research systems stood up on a SLURM GPU cluster.",
+                "text": "Scenesmith agentic indoor-scene generation (SAM3D assets), SplatTalk 3D VQA and vLLM serving of Qwen3.6-35B across 2 L40S GPUs. Gaussian Splat scenes loaded into NVIDIA Isaac Sim 6.0, with its splat rendering artifacts documented."
+              },
+              {
+                "when": "2026-09",
+                "title": "The evaluation of a Gaussian-Splatting-based vision-language navigation foundation model, reproduced.",
+                "text": "6,000 episodes over 938 scenes in about 100 hours on 2 GPUs, to size the compute needed before adopting it."
+              },
+              {
+                "when": "2026-06",
+                "title": "A LangGraph prototype turns a household purchase record into simulation-scene context for robot learning.",
+                "text": "Member personas (NVIDIA Nemotron Persona Korean), a simulated family discussion, appliance placement and long-horizon robot task queries. Run on made-up sample data."
+              }
+            ]
+          },
+          {
+            "kind": "prose",
+            "id": "role",
+            "title": "My part and stack",
+            "paragraphs": [
+              {
+                "text": "I calibrated the cameras, added the ground-truth labels, stood up the research systems, reproduced the evaluation and prototyped the scene-context pipeline."
+              }
+            ],
+            "tags": true
+          }
+        ]
+      }
     },
     {
       "title": "3D Gaussian Splatting Interactive Display Demo (2025)",
