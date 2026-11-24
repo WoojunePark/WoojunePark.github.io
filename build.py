@@ -503,24 +503,55 @@ def project_lines(prj: dict) -> set[str]:
     return keys
 
 
-def project_html(prj: dict, up: str, home: bool = False) -> str:
-    """One project row: title, line codes, summary and every result sentence beside its figure."""
+def project_stat(prj: dict) -> dict | None:
+    """The one result a project's card shows large: its own `stat`, else the hero of its page."""
+    return prj.get("stat") or (prj.get("page") or {}).get("hero")
+
+
+def card_image(prj: dict) -> dict | None:
+    """The picture on a project's card: the row's own `image`, else the first figure of its page. One source, so a
+    page whose diagram is renewed renews its card too."""
+    return prj.get("image") or next(iter(page_figs(prj)), None)
+
+
+def project_card(prj: dict, up: str, home: bool = False) -> str:
+    """One project as a card: the measured number, the picture, the summary and one large link. The result
+    sentences stay out of sight: on the project's own page when it has one, else folded under "Details"."""
+    h, has_page = ("h3" if home else "h2"), bool(prj.get("page"))
     title = escape(prj["title"])
-    if home:
-        title = f'<a href="portfolio/#{slug(prj["title"])}">{title}</a>'
-    bullets = "".join(f"<li>{escape(b['text'])}</li>" for b in prj.get("bullets") or [])
-    tags = "" if home else "".join(f'<li>{escape(t)}</li>' for t in prj.get("tags") or [])
+    if has_page or home:
+        title = f'<a href="{project_href(prj, up)}">{title}</a>'
     meta = " · ".join(x for x in (escape(prj.get("org", "")), fmt_range(prj.get("from"), prj.get("to"))) if x)
-    img = figure_html(prj.get("image"), up, "job-fig")
+    st = project_stat(prj)
+    num = (f'<div class="card-num"><b>{escape(st["number"])}</b><p>{escape(st["text"])}</p></div>') if st else ""
+    fig = card_image(prj)
+    if fig and not str(fig.get("source") or "").startswith("http"):
+        fig = {**fig, "caption": ""}     # a diagram drawn for the site says it in its boxes; its alt text describes it
+    img = figure_html(fig, up, "card-fig")
+    go = (f'<p class="card-go"><a class="go" href="{project_href(prj, up)}"><span>How it works</span>'
+          f'<span aria-hidden="true">→</span></a></p>') if has_page else ""
+    more = ""
+    if not home and not has_page and prj.get("bullets"):
+        bullets = "".join(f"<li>{escape(b['text'])}</li>" for b in prj["bullets"])
+        tags = "".join(f"<li>{escape(t)}</li>" for t in prj.get("tags") or [])
+        more = (f'<details class="card-more"><summary>Details</summary><ul class="card-res">{bullets}</ul>'
+                + (f'<ul class="tags">{tags}</ul>' if tags else "") + "</details>")
+    cls = "card" + (" has-num" if num else "") + (" has-fig" if img else "")
     ident = "" if home else f' id="{slug(prj["title"])}"'
-    return (f'<article class="job{" has-fig" if img else ""}"{ident}><div class="job-text">'
-            f'<{"h3" if home else "h2"} class="job-title">{title}</{"h3" if home else "h2"}>'
+    return (f'<article class="{cls}"{ident}><div class="card-head">'
             f'<p class="job-meta">{line_codes(project_lines(prj))}<span>{meta}</span></p>'
-            f'<p class="job-sum{"" if bullets else " lead"}">{escape(prj.get("summary", ""))}</p>'
-            + (f'<ul class="res">{bullets}</ul>' if bullets else "")
-            + (f'<ul class="tags">{tags}</ul>' if tags else "")
-            + (f'<p class="more"><a href="{project_href(prj, up)}">How it works: the project page →</a></p>'
-               if prj.get("page") else "") + f"</div>{img}</article>")
+            f'<{h} class="job-title">{title}</{h}></div>{num}{img}'
+            f'<div class="card-body"><p class="card-sum">{escape(prj.get("summary", ""))}</p>{go}{more}</div></article>')
+
+
+def more_work(projects: list[dict]) -> str:
+    """Home: the projects without a page of their own, as one row each, linked to their card on the Portfolio page."""
+    rows = "".join(
+        f'<li><span class="row-when">{escape((project_stat(x) or {}).get("number", ""))}</span> '
+        f'<span class="row-what"><a href="{project_href(x, "")}">{escape(x["title"])}</a></span> '
+        f'<span class="row-where">{escape(x.get("org", ""))}</span></li>' for x in projects)
+    return (f'<h3 class="more-h">More projects</h3><ul class="rows more-work">{rows}</ul>'
+            '<p class="more"><a href="portfolio/">All projects</a></p>') if rows else ""
 
 
 # ------------------------------------------------------------------ project pages
@@ -657,7 +688,10 @@ def home_html(data: dict) -> str:
     codes = (f'<p class="hero-codes">{line_codes(set().union(*lines))}</p>' if lines else "")
     hero = (f'<section class="hero"><h1>{escape(p["name"])} <span class="h1-sub">{escape(sub)}</span></h1>{photo}'
             f'<div class="hero-now">{now}</div><div class="hero-links">{codes}{links_html(data, "")}</div>{lede}</section>')
-    work = "".join(project_html(x, "", home=True) for x in data.get("projects") or [])
+    prjs = data.get("projects") or []
+    lead = [x for x in prjs if x.get("page")] or prjs
+    work = ('<div class="cards">' + "".join(project_card(x, "", home=True) for x in lead) + "</div>"
+            + more_work([x for x in prjs if x not in lead])) if prjs else ""
     rest = "".join(f"<p>{escape(a['text'])}</p>" for a in about[1:])
     return (hero + (band("work", "Selected work", work) if work else "") + home_pubs(data) + home_record(data)
             + (band("about", "About", f'<div class="prose">{rest}</div>') if rest else "")
@@ -774,7 +808,7 @@ def build(data: dict) -> list[tuple[str, str]]:
     ]
     urls = ["", "cv/", "publications/"]
     if data.get("projects"):
-        body = page_head(data, "Portfolio") + '<div class="jobs">' + "".join(project_html(x, "../") for x in data["projects"]) + "</div>"
+        body = page_head(data, "Portfolio") + '<div class="cards all">' + "".join(project_card(x, "../") for x in data["projects"]) + "</div>"
         pages.append(("portfolio/index.html", page(data, f"Portfolio: {name}", "portfolio", body, 1, f"Projects of {who}.")))
         urls.append("portfolio/")
         for x in data["projects"]:
