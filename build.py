@@ -508,6 +508,12 @@ def project_stat(prj: dict) -> dict | None:
     return prj.get("stat") or (prj.get("page") or {}).get("hero")
 
 
+def card_image(prj: dict) -> dict | None:
+    """The picture on a project's card: the row's own `image`, else the first figure of its page. One source, so a
+    page whose diagram is renewed renews its card too."""
+    return prj.get("image") or next(iter(page_figs(prj)), None)
+
+
 def project_card(prj: dict, up: str, home: bool = False) -> str:
     """One project as a card: the measured number, the picture, the summary and one large link. The result
     sentences stay out of sight: on the project's own page when it has one, else folded under "Details"."""
@@ -518,7 +524,7 @@ def project_card(prj: dict, up: str, home: bool = False) -> str:
     meta = " · ".join(x for x in (escape(prj.get("org", "")), fmt_range(prj.get("from"), prj.get("to"))) if x)
     st = project_stat(prj)
     num = (f'<div class="card-num"><b>{escape(st["number"])}</b><p>{escape(st["text"])}</p></div>') if st else ""
-    fig = prj.get("image")
+    fig = card_image(prj)
     if fig and not str(fig.get("source") or "").startswith("http"):
         fig = {**fig, "caption": ""}     # a diagram drawn for the site says it in its boxes; its alt text describes it
     img = figure_html(fig, up, "card-fig")

@@ -253,7 +253,7 @@ The material is ink on poster white. One grotesk (Archivo) carries every level o
 The PDF CV is a different object on purpose: the same markup stripped to a plain single text column in a system face, with rules, dots and codes removed, so parsers and printers get uninterrupted text.
 
 **Key Characteristics:**
-- Size follows importance. The name, then project titles, then result sentences, then everything else.
+- Size follows importance. The name, then a project's measured number and title, then everything else.
 - One typeface, two weights doing most of the work (700 and 400), 500 for the lede.
 - One red, reserved for "current", the AI agents code, the arrival mark, hover and focus.
 - A 6px black rule opens every band; a label column on the left names it from 64rem.
@@ -299,7 +299,7 @@ Black on white with one red. Every other value is a grey that supports the ink.
 - **Headline** (700, `headline`, 1.04, -0.03em): project titles.
 - **Lede** (500, `lede`, 1.3, -0.018em): the single opening sentence on the home page, max 28em. The line under the name uses the smaller `name-sub` in grey ink.
 - **Band label** (700, 1.375rem, -0.01em): the heading that names each band in the label column.
-- **Result** (700, `result`, 1.3, -0.012em): result sentences under a project. Publication row titles (1.3125rem) and the year beside them sit at the same level.
+- **Result** (700, `result`, 1.3, -0.012em): the line under a project's number and the rows of a project page. Publication row titles (1.3125rem) and the year beside them sit at the same level.
 - **Title** (700, 1.1875rem, 1.3): entry titles on the CV and publications pages and the current role. Organisation and group headings are 1.125rem.
 - **Body** (400, 1.0625rem, 1.5): running text, capped between 34em and 44em depending on the block.
 - **Secondary** (0.9375rem): navigation, links, dates, authors, venues, skills, footer. Bold when it is a link or a name, regular grey when it is metadata.
@@ -344,7 +344,7 @@ None. The system is flat ink on paper: no shadows, no gradients, no blur, no tra
 
 Everything is square: buttons, codes, figures and the portrait have no radius. The only curve is the red dot that marks the current role (a true circle, 0.7rem on the home page and 0.6rem on the CV).
 
-Lines have four weights and each has one job: 6px ink opens a band and closes the top bar and footer; 3px is the current-page underline and the focus outline; 2px ink sits above result sentences, under organisation and group headings and above skill group names; 1px hairline separates rows and frames raster figures. The code has a 1.5px ink outline. SVG diagrams carry no frame.
+Lines have four weights and each has one job: 6px ink opens a band and closes the top bar and footer; 3px is the current-page underline and the focus outline; 2px ink sits above a project's number, under organisation and group headings and above skill group names; 1px hairline separates rows and frames raster figures. The code has a 1.5px ink outline. SVG diagrams carry no frame.
 
 The portrait is a square crop in grayscale with slightly raised contrast.
 
@@ -365,11 +365,14 @@ Solid, square, no border.
 - **Structure:** 6px ink rule, label (band label size, optional one-line grey note under it, max 15em), body.
 - **Behaviour:** the label moves to the left column from 64rem. Bands carry a scroll margin so the rule is visible on arrival from a link.
 
-### Project rows (signature)
-- **Structure:** a headline-size title, a meta line (codes, then organisation in grey), a short summary (max 34em), then the result list, then tags; the figure sits to the right from 64rem and below the text on small screens.
-- **Result list:** a 2px ink rule, then each result as a bold sentence at result size, each closed by a hairline. This is the signature of the system: results are set as lines to be read from across the room, not as bullets.
-- **Figures:** SVG diagrams in ink, white and red with no frame; raster figures on white with a hairline frame and a height cap. The caption is 0.8125rem grey with the credit on its own smaller line.
-- **Title links:** no underline at rest; a 3px underline on hover.
+### Project cards (home "Selected work" and /portfolio/)
+The owner asked on 2026-11-24 for fewer words and for numbers and diagrams first, once the lead projects had pages of their own. A card replaced the row that set every result sentence large.
+- **Structure:** the meta line (codes, then organisation in grey), a headline-size title, the project's one measured number with one bold line saying what was measured, the picture, the summary in grey (max 34em), then one large link. On small screens they stack in that order. From 64rem the number takes columns 1 to 4, the text 5 to 9 and the picture 10 to 12; a card without a number puts its picture in columns 1 to 4.
+- **One source:** the number is the project's `stat`, else the `hero` of its page. The picture is the project's `image`, else the first figure of its page. A page that is renewed renews its card.
+- **The large link:** a project with a page gets a solid ink bar, "How it works" with an arrow, full width on small screens and at most 22rem from 64rem, at least 3.5rem tall; it turns red on hover like every button. The title links to the same page.
+- **Result sentences** are not on the card. They are on the project's page, or folded under "Details" (a `details` element, no script) for a project without one. `cv.md` carries all of them for machine readers.
+- **Figures:** SVG diagrams in ink, white and red with no frame; raster figures on white with a hairline frame and a height cap. A diagram drawn for the site shows without its caption, because its boxes say it and its alt text describes it; a figure from a publication keeps its caption and credit.
+- **Home:** only the projects with a page are cards; the others are one row each under "More projects" (number, title, organisation), linked to their card on /portfolio/.
 
 ### Project pages (/portfolio/<slug>/)
 A project with `page` in the data gets its own page; the owner chose the layout on 2026-11-24 (layout B with the number block of A, mockups in the career wiki). Order: back link, codes and title, then the measured number as the largest thing on the page with the condition it was measured under directly below it, two smaller numbers, the summary, then the sections of the data as bands. A `walk` section sets each step as a numbered box on a vertical line with its sentence beside it; the stretch of the line that is the system's own loop is red, and a dashed stretch marks where the walk leaves the loop. The full diagram follows as a map. From 64rem the number takes columns 1 to 7 and the two smaller numbers 8 to 12: it is the page's headline, so it may start in column 1. Red on the walk is the loop signal, not decoration.
