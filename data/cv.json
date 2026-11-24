@@ -1,7 +1,7 @@
 {
   "schema_version": "final-offer.site-public/v1",
   "updated": "2026-11-24",
-  "content_hash": "sha256:7117f5a405c97b709fdfa56b51d42c53d5bbbfd173a5dec79ed0839ba0b47011",
+  "content_hash": "sha256:4a42b8069746e219cbd115fbd9545bc5acdf59c687454835c8fda27d5dea3259",
   "site": {
     "url": "https://woojunepark.github.io",
     "cv_file_prefix": "CV_Woojune_Park",
@@ -535,6 +535,13 @@
         "OpenCV",
         "NumPy"
       ],
+      "image": {
+        "file": "assets/pubs/woojunepark-2026-lge-nexa-fig1-pipeline.svg",
+        "source": "Original diagram drawn for this site from the cited claims, 2026-11-24",
+        "caption": "NEXA ONE turns a product design scene into 3D Gaussian Splatting training data: exact camera poses and 3D points in COLMAP format, with no structure-from-motion step.",
+        "alt": "Block diagram. A box labelled Product design scene points down to a filled black box labelled NEXA ONE, 3ds Max plugin. Beside it a grey dashed box reads no SfM. Two arrows lead from the black box to boxes labelled Exact camera poses and 3D points, and two red arrows lead from those to a red box that reads 3D Gaussian Splatting training data, COLMAP format.",
+        "credit": "Diagram drawn for this site"
+      },
       "page": {
         "slug": "nexa",
         "title": "NEXA: 3D design files to Gaussian Splatting training data",
@@ -662,13 +669,6 @@
         "Blender",
         "3D asset optimization"
       ],
-      "image": {
-        "file": "assets/pubs/woojunepark-2026-lge-asset-optimization-agent-fig1-agent-loop.svg",
-        "source": "Original diagram drawn for this site from the cited claims, 2026-11-11",
-        "caption": "A marketer runs 3D asset optimization through the MCP-based tool; the LangGraph agent adds agentic optimization loops.",
-        "alt": "Three boxes in a row joined by arrows: Marketer, then a filled black box labelled MCP tool, then 3D asset optimization. A red curved arrow returns from the last box to the MCP tool box. Red text below reads LangGraph agent, agentic optimization loops.",
-        "credit": "Diagram drawn for this site"
-      },
       "page": {
         "slug": "asset-optimization-agent",
         "title": "3D asset optimization agent",
@@ -829,6 +829,13 @@
         "SLURM",
         "LangGraph"
       ],
+      "image": {
+        "file": "assets/pubs/woojunepark-2026-lge-physical-ai-data-fig1-camera-calibration.svg",
+        "source": "Original diagram drawn for this site from the cited claims, 2026-11-24",
+        "caption": "Target-less calibration of the robot's head cameras: SAM2 arm segmentation and forward-kinematics pose initialization feed an optimization of 5 distortion and 6 pose parameters against the robot's 3D model; projection error fell from over 20 px to under 5 px.",
+        "alt": "Block diagram. Two boxes, SAM2 arm segmentation and Forward-kinematics pose initialization, each point down into a filled black box that reads Optimize 5 distortion and 6 pose parameters against the robot's 3D model. A red arrow leads from it to a red box that reads Projection error, over 20 px to under 5 px.",
+        "credit": "Diagram drawn for this site"
+      },
       "page": {
         "slug": "physical-ai-data",
         "title": "Physical AI data: robot calibration, simulation and scene context",
@@ -931,6 +938,10 @@
     {
       "title": "3D Gaussian Splatting Interactive Display Demo (2025)",
       "org": "LG Electronics CTO, 3D Graphics",
+      "stat": {
+        "number": "4K",
+        "text": "rendered in real time, at a quality comparable to V-Ray output that takes about 40 minutes per frame"
+      },
       "summary": "An interactive display demo built on 3D Gaussian Splatting reconstructed from V-Ray renders, with real-time parallax.",
       "bullets": [
         {
@@ -969,6 +980,10 @@
     {
       "title": "Automated 3D Asset Optimization for Mobile AR on LG.com",
       "org": "LG Electronics CTO, 3D Graphics",
+      "stat": {
+        "number": "4 MB",
+        "text": "average file size, down from about 4 GB, over 200+ assets; individual assets vary widely"
+      },
       "summary": "Automated the optimization of high-fidelity 3D product assets (3ds Max + V-Ray) for web and mobile AR, so customers on LG.com (US) can view TV products at real scale.",
       "bullets": [
         {
@@ -1009,6 +1024,10 @@
     {
       "title": "Importance-Weighted Camera Placement for Gaussian Splatting",
       "org": "LG Electronics CTO",
+      "stat": {
+        "number": "+0.14 dB",
+        "text": "at most, from tripling a capture from 300 to 900 uniformly placed images; adding views uniformly saturates"
+      },
       "summary": "Research on importance-weighted camera placement, lifting image gradients, depth edges, SAM3 segmentation and OCR into a 3D importance field for camera selection. Results are preliminary; the close-up training experiment covers one scene.",
       "bullets": [
         {
@@ -1032,7 +1051,14 @@
         "Active view selection",
         "FisherRF",
         "SA-RegGS"
-      ]
+      ],
+      "image": {
+        "file": "assets/pubs/woojunepark-2026-lge-camera-placement-fig1-importance-field.svg",
+        "source": "Original diagram drawn for this site from the cited claims, 2026-11-24",
+        "caption": "Image gradients, depth edges, SAM3 segmentation and OCR are lifted into a 3D importance field for camera selection.",
+        "alt": "Block diagram. Four boxes in a two-by-two block, labelled Image gradients, Depth edges, SAM3 segmentation and OCR, point down into a filled black box labelled 3D importance field. A red arrow leads from it to a red box labelled Camera selection.",
+        "credit": "Diagram drawn for this site"
+      }
     },
     {
       "title": "Camera Pose Estimation and Multi-View Stereo for Mosaic-Based Omnidirectional Imaging",
